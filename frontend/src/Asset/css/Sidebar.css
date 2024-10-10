@@ -1,0 +1,17 @@
+main{
+    display: flex;
+    align-items: center;
+    margin: 0px 10px;
+}
+.Sidebar{
+    align-items: center;
+
+}
+.left-menu{
+    align-items: center;
+    justify-content: center;
+    display: grid;
+}
+.left-menu main{
+    display: grid;
+}

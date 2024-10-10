@@ -1,0 +1,47 @@
+
+.body{
+  background-color: #F9F6EF;
+  width: 100%;
+  margin: 0px;
+  font-weight: 600;
+  font-family: Ambit;
+}
+
+.menu{
+  display: flex;
+  align-items: center;
+}
+.menu button{
+  margin-left: 20px;
+}
+.main-board{
+  display: flex;
+  /* height: 780px; */
+}
+
+.left-side{
+  width: 20%;
+  background-color: #F4F7FE;
+  height: 100%;
+}
+
+.main-content{
+  width: 80%;
+  margin: 0px 30px;
+}
+
+
+.write-prompt Input{
+  margin : 20px 0px;
+}
+.btn-sumbit{
+  display: grid;
+}
+.write-prompt Button{
+  margin-top: 20px;
+}
+
+.main-content Space{
+  margin-top: 20px;
+  justify-content: flex-end;
+}
