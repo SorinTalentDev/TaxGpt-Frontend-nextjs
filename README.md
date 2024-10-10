@@ -12,6 +12,7 @@
 
     cd backend
     npm install
+    node index.js
 
 **To run the frontend & backend**:
 
