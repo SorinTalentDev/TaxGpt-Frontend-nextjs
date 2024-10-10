@@ -6,6 +6,7 @@
 
     cd frontend
     npm install
+    npm run start
 
 **To install the backend**:
 
