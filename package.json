@@ -42,10 +42,7 @@
       "last 1 safari version"
     ]
   },
-  {
   "devDependencies": {
-    "nodemon": "^x.x.x",
-    "react-scripts": "^x.x.x"
+    "nodemon": "^2.0.22"
   }
-}
 }
