@@ -19,6 +19,9 @@
     "web-vitals": "^2.1.4",
     "serve": "^14.2.0"
   },
+  "engines": {
+  "node": ">=14.x <=18.x"
+ },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
