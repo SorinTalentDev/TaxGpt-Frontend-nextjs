@@ -16,13 +16,16 @@
     "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "^15.5.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "serve": "^14.2.0"  // Added `serve` for production serving
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start",  // Local development
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build",  // Heroku postbuild to create the production build
+    "start:prod": "serve -s build"  // Serve the production build using the `serve` package
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +46,7 @@
     ]
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "@babel/plugin-proposal-private-property-in-object": "^7.18.6"  // Added Babel plugin to fix warning
   }
 }
