@@ -20,7 +20,8 @@ function Chat() {
         //Send message to backend to interact with OpenAI assistant
         setLoading(true);
         try{
-            const response = await axios.post("http://localhost:5000/send-message", { messages:input });
+            // const response = await axios.post("http://localhost:5000/send-message", { messages:input });
+            const response = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/send-message", { messages:input });
             const assistantMessage = response.data;
             setMessages((prev) => [...prev, { role:"assistant", content:assistantMessage}]);
         } catch (error) {
@@ -69,7 +70,7 @@ function Chat() {
         <div className="main-content">
             <div className="chatview" ref={chatViewRef}>
                 {messages.map((message, index) => (
-                    <React.Fragment key={index}>
+                <React.Fragment key={index}>
                     <div className={`message ${message.role}`}>
                         {renderMessage(message)}
                     </div>

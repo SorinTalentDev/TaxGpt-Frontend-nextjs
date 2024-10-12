@@ -2,7 +2,7 @@
 .chatview {
     margin-top: 30px;
     text-align: right;
-    height: 480px;
+    height: 750px;
     overflow-y: scroll;
     scrollbar-width: none; /* For Firefox */
     -ms-overflow-style: none; /* For Internet Explorer and Edge */
