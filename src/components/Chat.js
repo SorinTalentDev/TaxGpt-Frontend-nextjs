@@ -77,21 +77,24 @@ function Chat() {
                 </React.Fragment>
                 ))}
             </div>
-            <div className="content">
-                <textarea
-                aria-label="Type your message"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="type your message"
-                disabled={loading}
-                />
+            <div className="input-content">
+                <div className="content">
+                    <textarea
+                    aria-label="Type your message"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    placeholder="type your message"
+                    disabled={loading}
+                    />
+                </div>
+                <div className="submit">
+                    <button onClick={handleSendMessage} disabled={loading}>
+                        {loading ? "Sending..." : "send" }
+                    </button>
+                </div>
             </div>
-            <div className="submit">
-                <button onClick={handleSendMessage} disabled={loading}>
-                    {loading ? "Sending..." : "send" }
-                </button>
-            </div>
+
         </div>
     );
 }

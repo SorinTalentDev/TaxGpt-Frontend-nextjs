@@ -2,7 +2,7 @@
 .chatview {
     margin-top: 30px;
     text-align: right;
-    height: 750px;
+    height: 500px;
     overflow-y: scroll;
     scrollbar-width: none; /* For Firefox */
     -ms-overflow-style: none; /* For Internet Explorer and Edge */
@@ -16,7 +16,7 @@
     font-size: 20px;
 }
 .content textarea{
-    width: 100%;
+    width: 850px;
     max-height: 25px;
     font-size: 20px;
 }
@@ -35,4 +35,11 @@
 .assistant {
     text-align: left;
     margin-bottom: 10px;
+}
+.input-content{
+    display: flex;
+}
+.input-content Button{
+    margin-top: 0px;
+    height: 30px;
 }
