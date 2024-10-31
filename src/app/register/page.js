@@ -73,7 +73,7 @@ export default function Page(){
         } else {
             setShowEmailtip(false);
             setShowPasswordtip(false);
-            setShakeText(false);
+            // setShakeText(false);
             router.push('/dashboard');
         }
     };
@@ -149,11 +149,11 @@ export default function Page(){
                 </div>
                 <div className="block mt-4 w-2/3 2xl:mt-6 max-md:w-full">
                 <button ref={RegisterRef} 
-                    className={`bg-regal-blue rounded-lg text-white font-Ambit font-bold w-full h-11 shadow-xl ${!isButtonVisible ? 'bg-gray-400' : 'bg-regal-blue'}`} 
-                    onClick={gotoDashboard}
-                    disabled={isButtonVisible} 
-                >
-                        Sign up
+                        className={`rounded-lg text-white font-Ambit font-bold w-full h-11 shadow-xl ${isButtonVisible ? 'bg-regal-blue' : 'bg-gray-400'}`}
+                        onClick={gotoDashboard}
+                        disabled={!isButtonVisible} 
+                    >
+                        Login
                     </button>
                 </div>
                 <div className="flex mt-4 justify-center items-center w-2/3 max-md:w-full">

@@ -57,7 +57,7 @@ export default function Home() {
             <button className="bg-white p-4 rounded-full font-Ambit font-semibold mx-4 max-md:mt-5" onClick={() => sendhandler("How Do I Pay Fewer Taxes?")} >How Do I Pay Fewer Taxes?</button>
           </div>
           <div className="flex items-center justify-center mt-10 max-md:grid max-md:mt-5">
-            <button className="bg-white p-4 rounded-full font-Ambit font-semibold mx-4" onClick={() => sendhandler("Lorem Ipsum")}>Lorem Ipsum</button>
+            <button className="bg-white p-4 rounded-full font-Ambit font-semibold mx-4" onClick={() => sendhandler("What is CTC?")}>What is CTC?</button>
             <button className="bg-white p-4 rounded-full font-Ambit font-semibold mx-4 max-md:mt-5" onClick={() => sendhandler("When are taxes due?")}>When are taxes due?</button>
             <button className="bg-white p-4 rounded-full font-Ambit font-semibold mx-4 max-md:mt-5" onClick={() => sendhandler("Should I do my own taxes?")}>Should I do my own taxes?</button>
             <button className="bg-white p-4 rounded-full font-Ambit font-semibold mx-4 max-md:mt-5" onClick={() => sendhandler("Can I deduct medical expenses?")}>Can I deduct medical expenses?</button>

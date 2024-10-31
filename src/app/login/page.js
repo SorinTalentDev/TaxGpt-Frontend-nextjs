@@ -13,8 +13,8 @@ export default function Page(){
     const [validEmail, setValidemail] = useState("Please enter your email");
     const [showPasswordtip, setShowPasswordtip] = useState("");
     const [isChecked, setIsChecked] = useState(false);
-    const [shakeText, setShakeText] = useState();
-    const [isButtonVisible, setButtonVisible] = useState(false);
+    const [shakeText, setShakeText] = useState(false);
+    const [isButtonVisible, setIsButtonVisible] = useState(false);
     const LoginRef = useRef(null);
     const router = useRouter();
 
@@ -62,17 +62,18 @@ export default function Page(){
         } else {
             setShowEmailtip(false);
             setShowPasswordtip(false);
-            setShakeText(false);
+            // setShakeText(false);
             router.push('/dashboard');
         }
     };
 
     useEffect(() => {
+        // alert(isButtonVisible);
         if (!emailValue || !passwordValue || !isChecked){
-            setButtonVisible(false); 
+            setIsButtonVisible(false); 
         }
         else {
-            setButtonVisible(true);
+            setIsButtonVisible(true);
         }
     }, [emailValue, passwordValue, isChecked]);
 
@@ -122,16 +123,16 @@ export default function Page(){
                     />
                     <p
                         className={`ml-2 font-Ambit text-sm font-bold transition-colors duration-300 
-                        ${!shakeText ? 'text-regal-grey' : 'text-red-500'}`}
+                        ${shakeText ? 'text-regal-grey' : 'text-red-500'}`}
                     >
                         I agree to terms & conditions
                     </p>
                 </div>
                 <div className="block mt-4 w-2/3 2xl:mt-6 max-md:w-full">
                     <button ref={LoginRef} 
-                        className={`bg-regal-blue rounded-lg text-white font-Ambit font-bold w-full h-11 shadow-xl ${!isButtonVisible ? 'bg-gray-400' : 'bg-regal-blue'}`} 
+                        className={`rounded-lg text-white font-Ambit font-bold w-full h-11 shadow-xl ${isButtonVisible ? 'bg-regal-blue' : 'bg-gray-400'}`}
                         onClick={gotoDashboard}
-                        disabled={isButtonVisible} 
+                        disabled={!isButtonVisible} 
                     >
                         Login
                     </button>
