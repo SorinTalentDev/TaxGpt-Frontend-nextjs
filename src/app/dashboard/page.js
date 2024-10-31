@@ -153,10 +153,6 @@ export default function Page() {
         }
     }, []);
 
-    const scrollToBottom = () => {
-        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }; 
-
     return(
         <div className="flex h-screen w-full bg-bg-main">
             <div className="bg-white overflow snap-none p-2 w-1/6 max-md:hidden dark:bg-gray-800">
