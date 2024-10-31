@@ -135,8 +135,10 @@ export default function Page() {
 
     // Scroll to the bottom of chat whenever messages update
     useEffect(() => {
-        scrollToBottom();
-    }, []);
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+    }, [messages]); 
 
     useEffect(() => {
         if (localStorage.getItem('prompt')) {
@@ -204,7 +206,7 @@ export default function Page() {
                     </div>
                 </div>
                 <div className=' bg-bg-main '>
-                    <div ref={scrollRef} className=' my-7 pt-24 h-112 pb-pb-8rem text-xl mx-32 overflow-y-scroll scroll-width-none scroll-smooth font-Ambit font-normal max-md:mx-4 laptop:text-sm'>
+                    <div ref={scrollRef} className='2xl:pb-0 2xl:h-112 xl:pb-36 my-7 pb-24 pt-24 h-112 text-xl mx-32 overflow-y-scroll scroll-width-none scroll-smooth font-Ambit font-normal max-md:mx-4 max-md:pb-40 laptop:text-sm'>
                     {messages.map((message, index) => (
                         <div
                             key={index}

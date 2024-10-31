@@ -34,7 +34,7 @@ const config: Config = {
       },
       height:{
         '104':'440px',
-        '112':'550px',
+        '112':'600px',
       },
       screens: {
         '3xl':'1791px',
