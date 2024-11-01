@@ -75,7 +75,6 @@ export default function Page() {
                         <DataTable columns={columns} data={data} />
                     </div>
                     <div>
-                        sdfsdf
                     </div>
                 </div>
             </div>
