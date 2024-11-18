@@ -53,7 +53,7 @@ export default function Page() {
     
         try {
             console.log("Fetching thread IDs...");
-            const response = await axios.post('https://ltpoc-backend-b90752644b3c.herokuapp.com/thread/get', { userId });
+            const response = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/thread/get", { userId });
     
             if (response?.data?.data?.length > 0) {
                 const threads = response.data.data;
@@ -64,8 +64,10 @@ export default function Page() {
                     console.log("Processing thread ID:", threadId);
     
                     try {
-                        const messageHistoryResponse = await axios.post('https://ltpoc-backend-b90752644b3c.herokuapp.com/read-messageHistory', { threadId });
-    
+                        const messageHistoryResponse = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/read-messageHistory", { threadId });
+                        console.log('start');
+                        console.log(messageHistoryResponse);
+                        console.log('end');
                         if (messageHistoryResponse?.data?.message) {
                             console.log(`Message history for thread ID ${threadId}:`, messageHistoryResponse.data.message);
     
