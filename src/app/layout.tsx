@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SessionProvider } from "./sessionContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,12 +27,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/favicon.ico" type="image/png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        {/* Wrap children with SessionProvider */}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

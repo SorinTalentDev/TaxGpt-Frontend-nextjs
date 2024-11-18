@@ -1,9 +1,11 @@
 'use client';
+ 
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link"; 
+import axios from "axios";
 
 export default function Page(){
 
@@ -15,6 +17,7 @@ export default function Page(){
     const [isChecked, setIsChecked] = useState(false);
     const [shakeText, setShakeText] = useState(false);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
+    // const { setIsLoggedIn } = useSession();
     const LoginRef = useRef(null);
     const router = useRouter();
 
@@ -48,24 +51,30 @@ export default function Page(){
         setIsChecked(!isChecked);
     }
 
-    const gotoDashboard = () => {
-        if (emailValue === "" || passwordValue === "" || !isChecked) {
-            if (emailValue === "") {
-                setShowEmailtip(true);
+    const handleSignin = async() => {
+        try{
+            setIsButtonVisible(false); 
+            console.log(process.env.NEXT_PUBLIC_API_URL); // Check if the correct URL is logged
+            const response = await axios.post(`${process.env.API_URL}/users/signin`, {
+                email:emailValue,
+                password:passwordValue
+            });
+            if(response.data.success === 1){
+                // setIsLoggedIn(true);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userId', response.data.data._id);
+                console.log(localStorage.getItem('userId'));
+                router.push('/dashboard');
+            } else{
+                setIsButtonVisible(true);
+                alert(response.data.message);
+                
             }
-            if (passwordValue === "") {
-                setShowPasswordtip(true);  // Corrected to setShowPasswordtip
-            }
-            if (!isChecked) {
-                setShakeText(true);
-            }
-        } else {
-            setShowEmailtip(false);
-            setShowPasswordtip(false);
-            // setShakeText(false);
-            router.push('/dashboard');
+        } catch(error){
+            setIsButtonVisible(true);
+            console.log(error);
         }
-    };
+    }
 
     useEffect(() => {
         // alert(isButtonVisible);
@@ -131,7 +140,7 @@ export default function Page(){
                 <div className="block mt-4 w-2/3 2xl:mt-6 max-md:w-full">
                     <button ref={LoginRef} 
                         className={`rounded-lg text-white font-Ambit font-bold w-full h-11 shadow-xl ${isButtonVisible ? 'bg-regal-blue' : 'bg-gray-400'}`}
-                        onClick={gotoDashboard}
+                        onClick={handleSignin}
                         disabled={!isButtonVisible} 
                     >
                         Login

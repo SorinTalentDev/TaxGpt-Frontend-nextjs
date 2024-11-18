@@ -1,16 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bell, CircleCheck, CircleX, FileText, Info, LogOut, MessageSquare, Moon, Search, Settings, BellOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"; 
+import { useSession } from './../sessionContext';
+import { useRouter } from "next/navigation";
 
 export default function Page() {
     const [isOpen, setIsOpen] = useState(false);
+    const {resetSessionTimeout } = useSession();
     const [basicPlan, setBasicPlan] = useState(19);
     const [proPlan, setProPlan] = useState(49);
     const [bell, setBell] = useState(true);
     const [advanPlan, setAdvanPlan] = useState(99);
+    const router = useRouter();
     const toggleDropdown = () => {
         setIsOpen((prev) => !prev);
       };
@@ -32,6 +36,30 @@ export default function Page() {
     const bellhandler = () => {
         setBell(!bell);
     }
+    const gotoLogout = () => {
+        localStorage.setItem('isLoggedIn', 'false');
+        localStorage.setItem('userId', '');
+        router.push('/');
+    };
+    const handleUserInteraction  = () => {
+        resetSessionTimeout(Date.now()); // Update last activity time
+      };
+    useEffect(() => {
+    window.addEventListener('mousemove', handleUserInteraction );
+    window.addEventListener('keydown', handleUserInteraction );
+
+    return () => {
+        window.removeEventListener('mousemove', handleUserInteraction );
+        window.removeEventListener('keydown', handleUserInteraction );
+    };
+    });
+    
+    useEffect(() => {
+        if(localStorage.getItem('isLoggedIn') === 'false') {
+            gotoLogout();
+        }
+    });
+
     return(
         <div className="flex h-screen w-full bg-bg-main">
             <div className="bg-white overflow snap-none p-2 w-1/6 max-md:hidden">
@@ -72,7 +100,7 @@ export default function Page() {
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Bell /><p className='ml-3'>Notifications</p></a>
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Moon /><p className='ml-3'>Dark Mode</p></a>
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Info /><p className='ml-3'>infomation</p></a>
-                                            <a href='/login' className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center" ><LogOut /><p className='ml-3'>Logout</p></a>
+                                            <button href='/login' className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center w-full" onClick={gotoLogout} ><LogOut /><p className='ml-3'>Logout</p></button>
                                         </div>
                                     </div>
                                 )}

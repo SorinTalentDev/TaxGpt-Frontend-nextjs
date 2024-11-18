@@ -1,27 +1,49 @@
 "use client";
-
-
 import { Facebook, Instagram, Linkedin, SendHorizonal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from './sessionContext';
+
 export default function Home() {
 
+  const {resetSessionTimeout } = useSession();
   const [prompt, setPrompt] = useState("");
   const Router = useRouter();
 
   const gotodashboard = () => {
-    if(prompt){
-      localStorage.setItem('prompt', prompt);
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      Router.push("/dashboard");
+    } else {
+      Router.push("/login");
     }
-    Router.push("/dashboard");
+  }
+
+  const gotoPricing = () => {
+    if(localStorage.getItem('isLoggedIn') === 'true') {
+      Router.push('/pricing');
+    } else {
+      Router.push('/login');
+    }
   }
 
   const sendhandler = (data: string) => {
     localStorage.setItem('prompt', data);
-    Router.push("/dashboard");
+    gotodashboard();
   }
+  const handleUserInteraction  = () => {
+    resetSessionTimeout(Date.now()); // Update last activity time
+  };
+  useEffect(() => {
+    window.addEventListener('mousemove', handleUserInteraction );
+    window.addEventListener('keydown', handleUserInteraction );
+
+    return () => {
+      window.removeEventListener('mousemove', handleUserInteraction );
+      window.removeEventListener('keydown', handleUserInteraction );
+    };
+  })
 
   return (
     <div className="w-full m-0 p-0 block">
@@ -35,13 +57,13 @@ export default function Home() {
         <div className="flex font-Ambit font-normal text-sm m-2 items-center max-md:hidden">
           <a href='#' className="mx-8"> About us </a>
           <a href="#" className="mx-8"> Features </a>
-          <a href="/pricing" className="mx-8"> Pricing </a>
+          <button onClick={gotoPricing} className="mx-8"> Pricing </button>
           <a href='/login' className="ml-8"> Login</a>
           /
           <a href='/register' className="">Signup</a>
         </div>
         <div className="flex">
-          <a href="/dashboard" className="bg-regal-blue w-full text-white font-Ambit font-bold rounded-lg p-4">Start Research</a>
+          <button className="bg-regal-blue w-full text-white font-Ambit font-bold rounded-lg p-4" onClick={gotodashboard} >Start Research</button>
         </div>
       </div>
       <div className="w-full bg-bg-main m-0 p-16 py-48 max-md:p-2">

@@ -4,19 +4,24 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Bell, BellOff, FileText, Info, LogOut, MessageSquare, Moon, Search, SendHorizonal, Settings } from "lucide-react";
 import Image from "next/image";
 import axios from 'axios';
-import {v4 as uuidv4} from 'uuid';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
 import Link from "next/link"; 
+import { useSession } from './../sessionContext';
+import { useRouter } from "next/navigation";
+
 function toggleDarkMode(){
     document.documentElement.classList.toggle('dark');
 }
 
 export default function Page() {
-    const [isOpen, setIsOpen] = useState(false);
 
+    const {resetSessionTimeout } = useSession();
+
+    const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
     const [bell, setBell] = useState(true);
     const [messages, setMessages] = useState([]);
     const scrollRef = useRef(null); // Create a reference for the chat view
@@ -25,17 +30,17 @@ export default function Page() {
     const buttonRef = useRef(null);
     const handleSendMessage = async () => {
         if(!input.trim()) return;
-        const sessionId = localStorage.getItem('sessionId') || uuidv4();
-        localStorage.setItem('sessionId', sessionId);
         //Add user message to the message list
         setMessages([...messages , {role:"user", content:input}]);
-
+        const sessionId = localStorage.getItem('userId');
         //Send message to backend to interact with openAI assistant
         setLoading(true);
         setInput("");
         try{
-            const response = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/send-message", { messages:input, sessionId: sessionId });
-            let assistantMessage = response.data;
+            
+            // const response = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/send-message", { messages:input, sessionId: sessionId });
+            const response = await axios.post("http://localhost:5000/send-message", { messages:input, sessionId: sessionId });
+            let assistantMessage = response.data.assistantResponse;
 
             setMessages((prev) => [...prev, {role:"assistant", content:assistantMessage}]);
         } catch (error) {
@@ -44,7 +49,7 @@ export default function Page() {
             setLoading(false);
             setInput("");
         }
-    }
+    };
 
     // Handle Enter key press
     const handleKeyDown = (e) => {
@@ -56,7 +61,7 @@ export default function Page() {
 
     const bellhandler = () => {
         setBell(!bell);
-    }
+    };
 
     const formatDate = (date) => {
         return date.toLocaleString('en-US', {
@@ -131,8 +136,15 @@ export default function Page() {
             {modifiedMessage}
             </ReactMarkdown>
         );
-    }
-
+    };
+    const handleUserInteraction  = () => {
+        resetSessionTimeout(Date.now()); // Update last activity time
+    };
+    const gotoLogout = () => {
+        localStorage.setItem('isLoggedIn', 'false');
+        localStorage.setItem('userId', '');
+        router.push('/');
+    };
     // Scroll to the bottom of chat whenever messages update
     useEffect(() => {
         if (scrollRef.current) {
@@ -152,6 +164,21 @@ export default function Page() {
             localStorage.removeItem('prompt');
         }
     }, []);
+    useEffect(() => {
+        window.addEventListener('mousemove', handleUserInteraction );
+        window.addEventListener('keydown', handleUserInteraction );
+    
+        return () => {
+          window.removeEventListener('mousemove', handleUserInteraction );
+          window.removeEventListener('keydown', handleUserInteraction );
+        };
+    });
+    
+    useEffect(() => {
+        if(localStorage.getItem('isLoggedIn') === 'false'){
+            gotoLogout();
+        }
+    });
 
     return(
         <div className="flex h-screen w-full bg-bg-main">
@@ -193,7 +220,7 @@ export default function Page() {
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Bell /><p className='ml-3'>Notifications</p></a>
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Moon /><p className='ml-3'>Dark Mode</p></a>
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Info /><p className='ml-3'>infomation</p></a>
-                                            <Link href='/login' className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center" ><LogOut /><p className='ml-3'>Logout</p></Link>
+                                            <button className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center w-full" onClick={gotoLogout} ><LogOut /><p className='ml-3'>Logout</p></button>
                                         </div>
                                     </div>
                                 )}

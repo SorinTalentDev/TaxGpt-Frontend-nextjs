@@ -1,17 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bell, ChevronDown, ExternalLink, FileText, Info, LogOut, MessageSquare, Moon, Search, Settings, Upload, BellOff } from "lucide-react";
 import Image from "next/image";
 import Modal from '../components/Modal';
+import ProfileModal from '../components/ProfileModal';
 import Link from "next/link"; 
+import { useSession } from './../sessionContext';
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-
-
+    const router = useRouter();
+    const {resetSessionTimeout } = useSession();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+    const openProfileModal = () => setIsProfileModalOpen(true);
+    const closeProfileModal = () => setIsProfileModalOpen(false);
     const [bell, setBell] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const toggleDropdown = () => {
@@ -20,6 +26,31 @@ export default function Page() {
     const bellhandler = () => {
         setBell(!bell);
     }
+    const handleUserInteraction  = () => {
+        resetSessionTimeout(Date.now()); // Update last activity time
+    };
+    
+    const gotoLogout = () => {
+        localStorage.setItem('isLoggedIn', 'false');
+        localStorage.setItem('userId', '');
+        router.push('/');
+    };
+    useEffect(() => {
+        window.addEventListener('mousemove', handleUserInteraction );
+        window.addEventListener('keydown', handleUserInteraction );
+    
+        return () => {
+          window.removeEventListener('mousemove', handleUserInteraction );
+          window.removeEventListener('keydown', handleUserInteraction );
+        };
+    });
+
+    useEffect(() => {
+        if(localStorage.getItem('isLoggedIn') === 'false') {
+            gotoLogout();
+        }
+    })
+
     return(
         <div className="flex h-screen w-full bg-bg-main">
             <div className="bg-white overflow snap-none p-2 w-1/6 max-md:hidden">
@@ -51,7 +82,7 @@ export default function Page() {
                             <Info className="mx-3  max-md:hidden" width={15} />
                             <div className='relative'>
                                 <button onClick={toggleDropdown}>
-                                    <Image src='/image/avatar.png' alt="avatar" width={48} height={48} className="rounded-full mx-5" />
+                                    <Image src='https://firebasestorage.googleapis.com/v0/b/myaiwiz-storage.firebasestorage.app/o/uploads%2FElipse%205.png?alt=media&token=003b4bdc-e982-4bb7-8d5f-03c9f7d88236' alt="avatar" width={48} height={48} className="rounded-full mx-5" />
                                 </button>
                                 {isOpen && (
                                     <div className='absolute right-0 mt-2 w-56 shadow-lg ring-1 ring-black ring-opacity-5 z-10'>
@@ -60,7 +91,7 @@ export default function Page() {
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Bell /><p className='ml-3'>Notifications</p></a>
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Moon /><p className='ml-3'>Dark Mode</p></a>
                                             <a href='#' className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center border-b-2 border-black max-md:flex" ><Info /><p className='ml-3'>infomation</p></a>
-                                            <a href='/login' className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center" ><LogOut /><p className='ml-3'>Logout</p></a>
+                                            <button className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center w-full" onClick={gotoLogout} ><LogOut /><p className='ml-3'>Logout</p></button>
                                         </div>
                                     </div>
                                 )}
@@ -75,7 +106,7 @@ export default function Page() {
                         </div>
                         <div className='flex bg-white w-full justify-between mt-5 p-4 rounded-2xl items-center'>
                             <p className='font-Ambit font-semibold text-2xl max-md:text-xl'>Profile Photo</p>
-                            <Image src='/image/avatar.png' alt="avatar" width={48} height={48} className="rounded-full mx-5" />
+                            <button onClick={openProfileModal}><Image src='https://firebasestorage.googleapis.com/v0/b/myaiwiz-storage.firebasestorage.app/o/uploads%2FElipse%205.png?alt=media&token=003b4bdc-e982-4bb7-8d5f-03c9f7d88236' alt="avatar" width={48} height={48} className="rounded-full mx-5 cursor-pointer" /></button>
                         </div>
                         <div className='flex bg-white w-full justify-between mt-5 p-4 rounded-2xl items-center'>
                             <p className='font-Ambit font-semibold text-2xl max-md:text-xl'>Account Settings</p>
@@ -116,6 +147,7 @@ export default function Page() {
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={closeModal} />
+            <ProfileModal isOpen={isProfileModalOpen} onClose={closeProfileModal} />
         </div>
     );
 }

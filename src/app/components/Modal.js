@@ -1,13 +1,48 @@
 // components/Modal.js
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { CircleHelp, X } from "lucide-react";
-
 
 const Modal = ({ isOpen, onClose }) => {
     const [files, setFiles] = useState([]);
-    const [progress,setProgress] = useState({});
+    const [progress, setProgress] = useState({});
     const [overallProgress, setOverallProgress] = useState(0);
+    const [uploadState, setUploadstate] = useState(0);
+    const [formData, setFormData] = useState({
+        url: '',
+        title: '',
+        source: '',
+        Docdate: '',
+        tag: '',
+        categories: []
+    });
+
+    const validateDate = (date) => {
+        // Regex pattern to validate date in DD/MM/YYYY format
+        const datePattern = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    
+        // Test if the date matches the pattern
+        return datePattern.test(date);
+    };
+
     const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp', 'application/pdf'];
+    // UseEffect with dependency array to reset state when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            // console.log(progress);
+            setFiles([]);           // Reset file list
+            setProgress({});         // Reset individual file progress
+            setOverallProgress(0);   // Reset overall progress
+            setFormData({            // Reset form data fields
+                url: '',
+                title: '',
+                source: '',
+                Docdate: '',
+                tag: '',
+                categories: []
+            });
+        }
+    }, [isOpen]); // Ensure the dependency array is always present to prevent type mismatch errors
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -33,49 +68,72 @@ const Modal = ({ isOpen, onClose }) => {
     const startUpload = (selectedFiles) => {
         selectedFiles.forEach((file) => {
             setProgress((prevProgress) => ({ ...prevProgress, [file.name]: 0 }));
-            simulateUpload(file);
         });
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     };
 
-    const simulateUpload = (file) => {
-        const reader = new FileReader();
-        reader.onloadstart = () => updateProgress(file.name, 0);
-        reader.onprogress = (e) => {
-            if (e.lengthComputable) {
-                const percentage = Math.round((e.loaded / e.total) * 100);
-                updateProgress(file.name, percentage);
-            }
-        };
-        reader.onloadend = () => updateProgress(file.name, 100);
-        reader.readAsDataURL(file);
+    const handleFormDataChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
     };
 
-    const updateProgress = (fileName, percentage) => {
-        setProgress((prevProgress) => {
-            const updatedProgress = { ...prevProgress, [fileName]: percentage };
-            const totalProgress = calculateOverallProgress(updatedProgress);
-            setOverallProgress(totalProgress);
-            return updatedProgress;
+    const handleCategoryChange = (e) => {
+        const { value, checked } = e.target;
+        setFormData((prevData) => {
+            const categories = checked
+                ? [...prevData.categories, value]
+                : prevData.categories.filter((category) => category !== value);
+            return { ...prevData, categories };
         });
-        // Calculate overall progress here
-        const totalProgress = calculateOverallProgress({ ...progress, [fileName]: percentage });
-        setOverallProgress(totalProgress);
     };
-
-    const calculateOverallProgress = (progressData) => {
-        const total = Object.values(progressData).reduce((sum, value) => sum + value, 0);
-        return Object.keys(progressData).length ? total / Object.keys(progressData).length : 0;
-    };
-
     const deleteFile = (fileName) => {
         setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
         setProgress((prevProgress) => {
             const updatedProgress = { ...prevProgress };
             delete updatedProgress[fileName];
-            setOverallProgress(calculateOverallProgress(updatedProgress));
             return updatedProgress;
         });
+    };
+    // Submit form data and files
+    const handleSubmit = async () => {
+        if (!validateDate(formData.Docdate)) {
+            alert("Invalid date format. Please use DD/MM/YYYY.");
+            return; // Stop form submission
+        }
+        const data = new FormData();
+        console.log(progress);
+        // Append files
+        files.forEach((file) => data.append('files', file));
+        
+        // Append other form fields
+        data.append('url', formData.url);
+        data.append('title', formData.title);
+        data.append('source', formData.source);
+        data.append('Docdate', formData.Docdate);
+        data.append('tag', formData.tag);
+        data.append('userId', localStorage.getItem('userId'));
+        // Append categories
+        formData.categories.forEach((category) => data.append('categories', category));
+        console.log(localStorage.getItem('userId'));
+        setUploadstate(1);
+        try {
+            const response = await axios.post('http://localhost:5000/firebase/upload', data, {
+                onUploadProgress: (progressEvent) => {
+                    const { loaded, total } = progressEvent;
+                    const percentage = Math.round((loaded * 100) / total);
+                    setOverallProgress(percentage);  // Update progress bar
+                },
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            
+            console.log(response.data);
+            onClose(); // Close the modal after successful upload
+            setUploadstate(0);
+        } catch (error) {
+            console.error("Upload failed:", error);
+        }
     };
 
     const renderFiles = () => (
@@ -98,6 +156,7 @@ const Modal = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 overflow-auto scroll-width-none">
+            { uploadState === 0 ? (
             <div className="bg-white rounded-xl p-6 w-2/3 max-md:w-full relative max-h-[80vh] overflow-y-auto scroll-width-none">
                 <div className="flex justify-between items-center mb-4">
                     <p className="font-Ambit font-medium text-base">Upload Photos</p>
@@ -146,45 +205,30 @@ const Modal = ({ isOpen, onClose }) => {
                 </div>
                 <div className='w-full mt-3'>
                     <p className='font-Ambit font-normal text-xs'>Import from URL</p>
-                    <input className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Add file URL' />
+                    <input name="url" value={formData.url} onChange={handleFormDataChange} className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Add file URL' />
                 </div>
                 <div className='w-full mt-3'>
                     <p className='font-Ambit font-normal text-xs'>Title</p>
-                    <input className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Write a title' />
+                    <input name="title" value={formData.title} onChange={handleFormDataChange} className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Write a title' />
                 </div>
                 <div className='w-full mt-3'>
                     <p className='font-Ambit font-normal text-xs'>Source</p>
-                    <input className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Write a title' />
+                    <input name="source" value={formData.source} onChange={handleFormDataChange} className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Write a source' />
                 </div>
                 <div className='w-full mt-3'>
                     <p className='font-Ambit font-normal text-xs'>Date</p>
-                    <input className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Enter a Date' />
+                    <input name="Docdate" value={formData.Docdate} onChange={handleFormDataChange} className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='DD/MM/YYYY' />
                 </div>
                 <div className='w-full mt-3'>
                     <p className='font-Ambit font-normal text-xs'>Tag</p>
-                    <input className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Write a tag' />
+                    <input name="tag" value={formData.tag} onChange={handleFormDataChange} className='w-full h-9 rounded-md bg-gray-200 text-xs p-3' placeholder='Write a tag' />
                 </div>
                 <div className='inline-grid grid-cols-5 max-md:grid-cols-2 mt-7 w-full justify-between'>
                     <div className="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                        <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Corporate Tax</label>
+                        <input type="checkbox" value="Corporate Tax" onChange={handleCategoryChange} className="w-4 h-4" />
+                        <label className="ms-2 text-sm">Corporate Tax</label>
                     </div>
-                    <div className="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                        <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lorem Ispum</label>
-                    </div>
-                    <div className="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                        <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lorem Ispum</label>
-                    </div>
-                    <div className="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                        <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lorem Ispum</label>
-                    </div>
-                    <div className="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                        <label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Employment Law</label>
-                    </div>
+                    {/* Add other categories similarly */}
                 </div>
                 <div className='flex justify-between w-full'>
                     <div className='flex items-center text-gray-400 font-Ambit text-xs'>
@@ -192,11 +236,14 @@ const Modal = ({ isOpen, onClose }) => {
                         <p>Help Centre</p>
                     </div>
                     <div className='flex items-center font-Ambit'>
-                        <button className='rounded-md w-20 h-8 text-xs border-gray-300 border-2 font-medium mr-4' onClick={onClose}>Cancel</button>
-                        <button className='rounded-md w-20 h-8 text-xs border-none bg-regal-blue text-white font-medium'>Done</button>
+                        <button className='rounded-lg h-9 px-4 text-sm mr-3' onClick={onClose}>Cancel</button>
+                        <button className='rounded-lg h-9 px-4 text-white text-sm bg-black' onClick={handleSubmit}>Done</button>
                     </div>
                 </div>
-            </div>
+            </div> ) : (
+            <div>
+                <div className="w-12 h-12 border-4 border-t-white border-r-transparent border-solid rounded-full animate-spin"></div>
+            </div> ) }
         </div>
     );
 };
