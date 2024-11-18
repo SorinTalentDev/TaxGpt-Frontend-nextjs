@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell, ChevronDown, ExternalLink, FileText, Info, LogOut, MessageSquare, Moon, Search, Settings, Upload, BellOff } from "lucide-react";
 import Image from "next/image";
 import Modal from '../components/Modal';
@@ -8,6 +8,11 @@ import ProfileModal from '../components/ProfileModal';
 import Link from "next/link"; 
 import { useSession } from './../sessionContext';
 import { useRouter } from "next/navigation";
+import remarkGfm from 'remark-gfm';
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
+import axios from 'axios';
 
 export default function Page() {
     const router = useRouter();
@@ -20,6 +25,8 @@ export default function Page() {
     const closeProfileModal = () => setIsProfileModalOpen(false);
     const [bell, setBell] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
+    const [threadMessages, setThreadMessages] = useState({});
+
     const toggleDropdown = () => {
         setIsOpen((prev) => !prev);
       };
@@ -35,6 +42,114 @@ export default function Page() {
         localStorage.setItem('userId', '');
         router.push('/');
     };
+
+    // Corrected getThreadId function
+    const getThreadId = async () => {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            console.error("User ID not found in localStorage.");
+            return;
+        }
+    
+        try {
+            console.log("Fetching thread IDs...");
+            const response = await axios.post('https://ltpoc-backend-b90752644b3c.herokuapp.com/thread/get', { userId });
+    
+            if (response?.data?.data?.length > 0) {
+                const threads = response.data.data;
+                const groupedMessages = {};
+    
+                for (const thread of threads) {
+                    const threadId = thread.threadId;
+                    console.log("Processing thread ID:", threadId);
+    
+                    try {
+                        const messageHistoryResponse = await axios.post('https://ltpoc-backend-b90752644b3c.herokuapp.com/read-messageHistory', { threadId });
+    
+                        if (messageHistoryResponse?.data?.message) {
+                            console.log(`Message history for thread ID ${threadId}:`, messageHistoryResponse.data.message);
+    
+                            // Save messages for the current threadId
+                            groupedMessages[threadId] = messageHistoryResponse.data.message;
+                        } else {
+                            console.warn(`No message history found for thread ID ${threadId}.`);
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching message history for thread ID ${threadId}:`, error);
+                    }
+                }
+    
+                setThreadMessages(groupedMessages); // Update state with grouped messages
+                console.log("Finished fetching message history for all threads.");
+            } else {
+                console.warn("No threads found for this user.");
+            }
+        } catch (error) {
+            console.error("Error fetching thread IDs:", error);
+        }
+    };
+    
+    const renderMessage = (message) => {
+        let link;
+        console.log(message);
+        console.log(message);
+        // Replaces valid 【4:xx†pXX.pdf】 with Markdown links, removing consecutive duplicates
+        let modifiedMessage = message.content
+        .replace(/(【\d+:\d+†p(\d+)\.pdf】)(?=.*\2)/g, '')
+        .replace(/【\d+:\d+†source】/g, '') // Remove consecutive duplicates
+        .replace(/【\d+:\d+†p(\d+)\.pdf】/g, (match, pageNumber) => {
+            link = ` [ [p${pageNumber}.pdf](https://www.irs.gov/pub/irs-pdf/p${pageNumber}.pdf) ]`;
+            return link; // Return the link
+        });
+        return(
+            <ReactMarkdown
+                // children = {modifiedMessage}
+                rehypePlugins = {[remarkGfm]}
+                components={{
+                    a:({children, href}) => (
+                        <a href={href} target='_blank' rel='noopener noreferrer' className='text-regal-blue'>
+                            {children}
+                        </a>
+                    ),
+                    code({inline, className, children, ...props}){
+                        const match = /language-(\w+)/.exec(className || '');
+                        return !inline && match ? (
+                            <SyntaxHighlighter
+                            style={coy}
+                            language={match[1]}
+                            PreTag="div"
+                            {...props}
+                        >
+                            {String(children).replace(/\n$/, '')}
+                        </SyntaxHighlighter>
+                        ) : (
+                            <code className={className} {...props}>
+                                {children}
+                            </code>
+                        );
+                    },
+                    table: ({children, ...props}) => (
+                        <table className='w-full border-collapse text-center text-xs table-fixed rounded-lg' {...props}>
+                            {children}
+                        </table>
+                    ),
+                    th: ({children, ...props}) => (
+                        <th className='border-black border-2 p-2 text-center' {...props}>
+                           {children} 
+                        </th>
+                    ),
+                    td:({children, ...props}) => (
+                        <td className='border-black border-2 p-2 text-center' {...props}>
+                            {children}
+                        </td>
+                    )
+                }}
+            >
+            {modifiedMessage}
+            </ReactMarkdown>
+        );
+    };
+
     useEffect(() => {
         window.addEventListener('mousemove', handleUserInteraction );
         window.addEventListener('keydown', handleUserInteraction );
@@ -43,14 +158,15 @@ export default function Page() {
           window.removeEventListener('mousemove', handleUserInteraction );
           window.removeEventListener('keydown', handleUserInteraction );
         };
-    });
-
+      });
     useEffect(() => {
         if(localStorage.getItem('isLoggedIn') === 'false') {
             gotoLogout();
         }
-    })
-
+    });
+    useEffect(() => {
+        getThreadId();
+    }, []);
     return(
         <div className="flex h-screen w-full bg-bg-main">
             <div className="bg-white overflow snap-none p-2 w-1/6 max-md:hidden">
@@ -112,9 +228,32 @@ export default function Page() {
                             <p className='font-Ambit font-semibold text-2xl max-md:text-xl'>Account Settings</p>
                             <button className='flex text-regal-grey w-36 justify-between border-regal-grey border-2 p-2 rounded-xl'><p>Select</p><ChevronDown /></button>
                         </div>
-                        <p className='font-Ambit font-semibold text-3xl mt-5 max-md:text-xl'>Library</p>
-                        <div className='w-full bg-white mt-5 p-3 rounded-lg'>
-                            <div className='text-gray-400'>No Message</div>
+                        <p className='font-Ambit font-semibold text-3xl mt-5 max-md:text-xl'>History</p>
+                        <div>
+                            {Object.keys(threadMessages).length > 0 ? (
+                                Object.entries(threadMessages).map(([threadId, messages]) => (
+                                <div key={threadId} className='w-full bg-white mt-5 p-3 rounded-lg font-Ambit font-normal'>
+                                    {/* <p className="font-bold text-lg mb-2">Thread ID: {threadId}</p> */}
+                                    {messages.length > 0 ? (
+                                    // Reverse the messages for display without modifying the original array
+                                    [...messages].reverse().map((message, index) => (
+                                        <div
+                                        key={index}
+                                        className={message.role === 'user' ? 'text-black' : 'text-gray-500'}
+                                        >
+                                            <React.Fragment key={index}>
+                                                {renderMessage(message)}
+                                            </React.Fragment>
+                                        </div>
+                                    ))
+                                    ) : (
+                                    <p className="text-gray-400">No messages</p>
+                                    )}
+                                </div>
+                                ))
+                            ) : (
+                                <div className="w-full bg-white mt-5 p-3 rounded-lg text-gray-400">No messages</div>
+                            )}
                         </div>
                         <div className='w-full flex justify-between items-center  mt-5'>
                             <p className='font-Ambit font-semibold text-3xl max-md:text-xl'>Saved Documents</p>
