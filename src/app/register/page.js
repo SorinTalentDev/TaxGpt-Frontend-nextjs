@@ -60,7 +60,8 @@ export default function Page() {
     const handleSignup = async() => {
         try{
             setButtonVisible(false);
-            const response= await axios.post(`${process.env.API_URL}/users/signup`, {
+            // const response= await axios.post(`${process.env.API_URL}/users/signup`, {
+            const response= await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/users/signup", {
                 username:usernameValue,
                 email:emailValue,
                 password:passwordValue,

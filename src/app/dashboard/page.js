@@ -38,8 +38,8 @@ export default function Page() {
         setInput("");
         try{
             
-            // const response = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/send-message", { messages:input, sessionId: sessionId });
-            const response = await axios.post("http://localhost:5000/send-message", { messages:input, sessionId: sessionId });
+            const response = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/send-message", { messages:input, sessionId: sessionId });
+            // const response = await axios.post("http://localhost:5000/send-message", { messages:input, sessionId: sessionId });
             let assistantMessage = response.data.assistantResponse;
 
             setMessages((prev) => [...prev, {role:"assistant", content:assistantMessage}]);
