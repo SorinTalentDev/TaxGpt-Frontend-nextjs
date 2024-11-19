@@ -97,10 +97,10 @@ export default function Page() {
         console.log(message);
         // Replaces valid 【4:xx†pXX.pdf】 with Markdown links, removing consecutive duplicates
         let modifiedMessage = message.content
-        .replace(/(【\d+:\d+†p(\d+)\.pdf】)(?=.*\2)/g, '')
+        .replace(/(【\d+:\d+†p(\w+)\.pdf】)(?=.*\2)/g, '')
         .replace(/【\d+:\d+†source】/g, '') // Remove consecutive duplicates
-        .replace(/【\d+:\d+†p(\d+)\.pdf】/g, (match, pageNumber) => {
-            link = ` [ [p${pageNumber}.pdf](https://www.irs.gov/pub/irs-pdf/p${pageNumber}.pdf) ]`;
+        .replace(/【\d+:\d+†p(\w+)\.pdf】/g, (match, fileName) => {
+            link = ` [ [p${fileName}.pdf](https://www.irs.gov/pub/irs-pdf/p${fileName}.pdf) ]`;
             return link; // Return the link
         });
         return(

@@ -183,11 +183,11 @@ export default function Page() {
     return(
         <div className="flex h-screen w-full bg-bg-main">
             <div className="bg-white overflow snap-none p-2 w-1/6 max-md:hidden dark:bg-gray-800">
-                <Link href='/' className="flex items-center w-full mt-6">
+            <Link href='/' className="flex items-center w-full mt-6" style={{ position: 'fixed', left: '2%', top:'1%', width:'11%' }}>
                     <Image src="/image/footer-logo.png" alt="logo" width={40} height={40} />
                     <p className="font-Ambit font-semibold text-2xl ml-4 dark:text-white">BotBuzz</p>
                 </Link>
-                <div className="grid mt-7">
+                <div className="grid mt-7" style={{position:'fixed', left:'2%', width:'11%', top:'10%'}}>
                     <a href='/dashboard' className="flex bg-regal-blue text-white w-full h-10 items-center rounded-lg p-2"> <MessageSquare /><p className="ml-6">Home</p></a>
                     <a href='/documents' className="flex bg-white text-black items-center rounded-lg p-2"><FileText /><p className="ml-6"> Documents </p></a>
                 </div>
@@ -228,8 +228,8 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-                <div className=' bg-bg-main '>
-                    <div ref={scrollRef} className='2xl:pb-0 2xl:h-112 xl:pb-36 my-7 pb-24 pt-24 h-112 text-xl mx-32 overflow-y-scroll scroll-width-none scroll-smooth font-Ambit font-normal max-md:mx-4 max-md:pb-40 laptop:text-sm'>
+                <div className=' bg-bg-main'>
+                    <div ref={scrollRef} className='my-7 pt-24 text-xl overflow-y-scroll scroll-width-none scroll-smooth font-Ambit font-normal laptop:text-sm max-md:mx-[10%] max-md:pb-[25%] mx-[25%] pb-[8%]'>
                     {messages.map((message, index) => (
                         <div
                             key={index}
@@ -238,9 +238,9 @@ export default function Page() {
                             } mb-2`}
                         >
                             {message.role === 'user' ? (
-                                <div className='bg-white text-black w-full p-4 text-base rounded-xl text-right'>
+                                <div className=' text-black w-full text-base text-right'>
                                     <React.Fragment key={index}>
-                                        <div className={`message ${message.role}`}>
+                                        <div className={`message ${message.role} bg-gray-300 inline-block p-4 rounded-xl`}>
                                             {renderMessage(message)}
                                         </div>
                                     </React.Fragment>
@@ -274,9 +274,9 @@ export default function Page() {
                         )
                     }
                     </div>
-                    <div className='fixed bottom-0 z-100 bg-bg-main w-full'>
-                        <div className='flex py-9 max-md:justify-center '>
-                            <input type='text' value={input} disabled={loading} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} className='w-prompit-width h-10 rounded-l-lg p-3 ml-48 2xl:ml-80 max-md:ml-0 max-md:w-80' placeholder='Enter a Prompt here' />
+                    <div className="fixed bottom-0 z-50 bg-bg-main md:w-[85%] max-md:w-lvw">
+                        <div className='flex pb-3 max-md:justify-center max-md:m-0' style={{alignItems:'center', justifyContent:'center', paddingTop:'10px'}}>
+                            <input type='text' value={input} disabled={loading} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} className='w-prompit-width h-10 rounded-l-lg p-3 max-md:ml-0 max-md:w-80' placeholder='Enter a Prompt here' />
                             <button ref={buttonRef} onClick={handleSendMessage} className='bg-white text-input-gray h-10 w-11 rounded-r-lg flex justify-center items-center ml-px' style={{ color: input ? "black" : "#ccc", }}>
                                 {
                                     !loading ? (<SendHorizonal className='w-6' />) : (
@@ -289,7 +289,7 @@ export default function Page() {
                                 
                             </button>
                         </div>
-                        <div className='flex text-center items-center ml-64 2xl:ml-96 max-md:m-1'>
+                        <div className='flex text-center items-center max-md:m-0 max-md:w-[100%]' style={{display:'flex', justifyItems:'center', justifyContent:'center', width:'83.33333333%'}}>
                             <p className='text-center text-xs font-Ambit text-regal-grey pb-5'>Free Research Preview Bot Buzz may produce inaccurate information about people, places, or facts. <a className='text-regal-blue'>BotBuzz Version2.0</a> </p>
                         </div>
                     </div>
