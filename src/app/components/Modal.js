@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CircleHelp, X } from "lucide-react";
+import toast from 'react-hot-toast';
 
 const Modal = ({ isOpen, onClose }) => {
     const [files, setFiles] = useState([]);
@@ -131,8 +132,10 @@ const Modal = ({ isOpen, onClose }) => {
             console.log(response.data);
             onClose(); // Close the modal after successful upload
             setUploadstate(0);
+            toast.success("Uploaded documents successfully");
         } catch (error) {
             console.error("Upload failed:", error);
+            toast.error('Upload failed');
         }
     };
 

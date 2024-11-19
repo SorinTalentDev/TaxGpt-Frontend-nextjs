@@ -8,7 +8,7 @@ import Link from "next/link";
 import axios from 'axios';
 import { useRouter } from "next/navigation";
 import { useSession } from './../sessionContext';
-
+import toast from 'react-hot-toast';
 
 export default function Page() {
     const {resetSessionTimeout } = useSession();
@@ -65,9 +65,11 @@ export default function Page() {
                 documentId: docId
             });
             if(response.data.success === 1) {
-                alert('Deleted document successfully.');
+                // alert('Deleted document successfully.');
+                toast.success('Deleted document successfully.');
+                setTimeout(() => { window.location.reload() }, 2000); 
             } else {
-                alert(`Can't delete documents.`);
+                toast.error(`Can't delete documents.`);
             }
         } catch(error) {
             console.log('Error:', error);
