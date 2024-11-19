@@ -78,65 +78,88 @@ export default function Page() {
     };
 
     const renderMessage = (message) => {
-        let link;
         console.log(message);
-        console.log(message);
-        // Replaces valid 【4:xx†pXX.pdf】 with Markdown links, removing consecutive duplicates
-        let modifiedMessage = message.content
-        .replace(/(【\d+:\d+†p(\w+)\.pdf】)(?=.*\2)/g, '')
-        .replace(/【\d+:\d+†source】/g, '') // Remove consecutive duplicates
-        .replace(/【\d+:\d+†p(\w+)\.pdf】/g, (match, fileName) => {
-            link = ` [ [p${fileName}.pdf](https://www.irs.gov/pub/irs-pdf/p${fileName}.pdf) ]`;
-            return link; // Return the link
-        });
-        return(
+    
+        // Replace valid 【4:xx†pXX.pdf】 with Markdown links, removing consecutive duplicates
+        const modifiedMessage = message.content
+            .replace(/(【\d+:\d+†p\w+\.pdf】)(?=.*\1)/g, '') // Remove consecutive duplicates
+            .replace(/【\d+:\d+†source】/g, '') // Remove specific source markers
+            .replace(/【\d+:\d+†(p\w+)\.pdf】/g, (match, fileName) => {
+                return `[ [${fileName}.pdf](https://www.irs.gov/pub/irs-pdf/${fileName}.pdf) ]`;
+            });
+    
+        return (
             <ReactMarkdown
-                // children = {modifiedMessage}
-                rehypePlugins = {[remarkGfm]}
+                rehypePlugins={[remarkGfm]}
                 components={{
-                    a:({children, href}) => (
-                        <a href={href} target='_blank' rel='noopener noreferrer' className='text-regal-blue'>
+                    a: ({ children, href }) => (
+                        <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-regal-blue"
+                        >
                             {children}
                         </a>
                     ),
-                    code({inline, className, children, ...props}){
+                    code({ inline, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
                         return !inline && match ? (
                             <SyntaxHighlighter
-                            style={coy}
-                            language={match[1]}
-                            PreTag="div"
-                            {...props}
-                        >
-                            {String(children).replace(/\n$/, '')}
-                        </SyntaxHighlighter>
+                                style={coy}
+                                language={match[1]}
+                                PreTag="div"
+                                {...props}
+                            >
+                                {String(children).replace(/\n$/, '')}
+                            </SyntaxHighlighter>
                         ) : (
                             <code className={className} {...props}>
                                 {children}
                             </code>
                         );
                     },
-                    table: ({children, ...props}) => (
-                        <table className='w-full border-collapse text-center text-xs table-fixed rounded-lg' {...props}>
+                    table: ({ children, ...props }) => (
+                        <table
+                            className="w-full border-collapse text-center text-xs table-fixed rounded-lg"
+                            {...props}
+                        >
                             {children}
                         </table>
                     ),
-                    th: ({children, ...props}) => (
-                        <th className='border-black border-2 p-2 text-center' {...props}>
-                           {children} 
+                    th: ({ children, ...props }) => (
+                        <th
+                            className="border-black border-2 p-2 text-center"
+                            {...props}
+                        >
+                            {children}
                         </th>
                     ),
-                    td:({children, ...props}) => (
-                        <td className='border-black border-2 p-2 text-center' {...props}>
+                    td: ({ children, ...props }) => (
+                        <td
+                            className="border-black border-2 p-2 text-center"
+                            {...props}
+                        >
                             {children}
                         </td>
-                    )
+                    ),
+                    ul: ({ children, ...props }) => (
+                        <ul className="list-disc pl-5" {...props}>
+                            {children}
+                        </ul>
+                    ),
+                    li: ({ children, ...props }) => (
+                        <li className="mb-1" {...props}>
+                            {children}
+                        </li>
+                    ),
                 }}
             >
-            {modifiedMessage}
+                {modifiedMessage}
             </ReactMarkdown>
         );
     };
+    
     const handleUserInteraction  = () => {
         resetSessionTimeout(Date.now()); // Update last activity time
     };
@@ -289,7 +312,7 @@ export default function Page() {
                                 
                             </button>
                         </div>
-                        <div className='flex text-center items-center max-md:m-0 max-md:w-[100%]' style={{display:'flex', justifyItems:'center', justifyContent:'center', width:'83.33333333%'}}>
+                        <div className='flex text-center items-center max-md:m-0 max-md:w-[100%]' style={{display:'flex', justifyItems:'center', justifyContent:'center'}}>
                             <p className='text-center text-xs font-Ambit text-regal-grey pb-5'>Free Research Preview Bot Buzz may produce inaccurate information about people, places, or facts. <a className='text-regal-blue'>BotBuzz Version2.0</a> </p>
                         </div>
                     </div>
