@@ -48,6 +48,7 @@ export default function Page() {
     const getThreadId = async () => {
         const userId = localStorage.getItem('userId');
         if (!userId) {
+            setReadHistory(true);
             console.error("User ID not found in localStorage.");
             return;
         }
@@ -86,6 +87,7 @@ export default function Page() {
                 console.log("Finished fetching message history for all threads.");
             } else {
                 console.warn("No threads found for this user.");
+                setReadHistory(true);
             }
         } catch (error) {
             console.error("Error fetching thread IDs:", error);
