@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link"; 
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Page(){
 
@@ -67,12 +68,14 @@ export default function Page(){
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userId', response.data.data._id);
                 console.log(localStorage.getItem('userId'));
-                router.push('/dashboard');
                 setLoggingStatus(false);
+                toast.success('Logged successfully');
+                router.push('/dashboard');
+                
             } else{
                 setIsButtonVisible(true);
                 setLoggingStatus(false);
-                alert(response.data.message);
+                toast.error(response.data.message);
                 
             }
         } catch(error){

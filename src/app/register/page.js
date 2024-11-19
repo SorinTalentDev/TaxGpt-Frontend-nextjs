@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link"; 
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Page() {
     const [emailValue, setEmailValue] = useState("");
@@ -85,14 +86,16 @@ export default function Page() {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userId', response.data.data._id);
                 console.log(localStorage.getItem('userId'));
+                setSignupStatus(false);
+                toast.success('Registered successfully');
                 router.push('/dashboard');
                 setButtonVisible(true);
-                setSignupStatus(false);
+                
             } else {
                 setSignupStatus(false);
                 console.log(response);
                 setButtonVisible(true);
-                alert(response.data.message);
+                toast.error(response.data.message);
             }
         } catch(error){
             setButtonVisible(true);

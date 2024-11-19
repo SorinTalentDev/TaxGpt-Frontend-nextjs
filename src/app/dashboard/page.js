@@ -11,6 +11,7 @@ import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Link from "next/link"; 
 import { useSession } from './../sessionContext';
 import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast'
 
 function toggleDarkMode(){
     document.documentElement.classList.toggle('dark');
@@ -203,6 +204,7 @@ export default function Page() {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         console.log('Prompt from localStorage:', isLoggedIn);
         if (isLoggedIn === 'false' || isLoggedIn === null) {
+            toast.error('Please login');
             gotoLogout();  // Make sure this function does the necessary redirect/logout actions
         }
     }, []);
