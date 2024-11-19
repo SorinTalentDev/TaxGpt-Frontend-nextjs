@@ -207,7 +207,7 @@ export default function Page() {
             toast.error('Please login');
             gotoLogout();  // Make sure this function does the necessary redirect/logout actions
         }
-    }, []);
+    });
 
     return(
         <div className="flex h-screen w-full bg-bg-main">
