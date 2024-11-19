@@ -176,15 +176,23 @@ export default function Page() {
     }, [messages]); 
 
     useEffect(() => {
-        if (localStorage.getItem('prompt')) {
-            const prompt = localStorage.getItem('prompt');
-            setInput(prompt);    
+        const prompt = localStorage.getItem('prompt');
+        console.log('Prompt from localStorage:', prompt);
+        if (prompt) {
+            setInput(prompt);
             if (buttonRef.current) {
                 setTimeout(() => {
                     buttonRef.current.click();  // Trigger the click event with a slight delay
                 }, 100);
             }
-            localStorage.removeItem('prompt');
+            localStorage.removeItem('prompt');  // Remove the prompt after it's used
+        }
+    
+        // Check login status and redirect if not logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        console.log('Prompt from localStorage:', isLoggedIn);
+        if (isLoggedIn === 'false' || isLoggedIn === null) {
+            gotoLogout();  // Make sure this function does the necessary redirect/logout actions
         }
     }, []);
     useEffect(() => {
@@ -195,12 +203,6 @@ export default function Page() {
           window.removeEventListener('mousemove', handleUserInteraction );
           window.removeEventListener('keydown', handleUserInteraction );
         };
-    });
-    
-    useEffect(() => {
-        if(localStorage.getItem('isLoggedIn') === 'false'){
-            gotoLogout();
-        }
     });
 
     return(
@@ -263,7 +265,7 @@ export default function Page() {
                             {message.role === 'user' ? (
                                 <div className=' text-black w-full text-base text-right'>
                                     <React.Fragment key={index}>
-                                        <div className={`message ${message.role} bg-gray-300 inline-block p-4 rounded-xl`}>
+                                        <div className={`message ${message.role} bg-gray-100 inline-block p-4 rounded-full`}>
                                             {renderMessage(message)}
                                         </div>
                                     </React.Fragment>

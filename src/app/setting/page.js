@@ -26,6 +26,7 @@ export default function Page() {
     const [bell, setBell] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [threadMessages, setThreadMessages] = useState({});
+    const [readHistory, setReadHistory]  = useState(false);
 
     const toggleDropdown = () => {
         setIsOpen((prev) => !prev);
@@ -62,7 +63,6 @@ export default function Page() {
                 for (const thread of threads) {
                     const threadId = thread.threadId;
                     console.log("Processing thread ID:", threadId);
-    
                     try {
                         const messageHistoryResponse = await axios.post("https://ltpoc-backend-b90752644b3c.herokuapp.com/read-messageHistory", { threadId });
                         console.log('start');
@@ -73,6 +73,7 @@ export default function Page() {
     
                             // Save messages for the current threadId
                             groupedMessages[threadId] = messageHistoryResponse.data.message;
+                            setReadHistory(true);
                         } else {
                             console.warn(`No message history found for thread ID ${threadId}.`);
                         }
@@ -311,6 +312,22 @@ export default function Page() {
             </div>
             <Modal isOpen={isModalOpen} onClose={closeModal} />
             <ProfileModal isOpen={isProfileModalOpen} onClose={closeProfileModal} />
+            {
+                    readHistory === false ? (
+                        <div id="loading-overlay" className="fixed inset-0 z-50 flex items-center justify-center">
+                            <div className="bg-gray-900 bg-opacity-60 flex p-4 rounded-full items-center">
+                                <svg className="animate-spin h-8 w-8 text-white mr-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <span className="text-white text-xl font-bold font-Ambit">waiting.....</span>
+                            </div>
+                        </div>
+                    ): ''
+                }
         </div>
     );
 }

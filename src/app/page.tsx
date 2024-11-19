@@ -69,7 +69,7 @@ export default function Home() {
       <div className="w-full bg-bg-main m-0 p-16 py-48 max-md:p-2">
         <div className="w-full flex justify-center font-Ambit font-semibold items-center">
           <input placeholder="Ask a Tax or Legal Queston...." value={prompt} onChange={(e) => setPrompt(e.target.value)} className="w-2/3 h-16 text-xl p-4 rounded-lg max-md:text-sm max-md:p-4 max-md:h-10 max-md:w-4/3 max-md:mt-9" />
-          <button className="bg-regal-blue rounded-lg text-white w-24 ml-4 h-16  max-md:hidden" onClick={gotodashboard}>Ask now</button>
+          <button className="bg-regal-blue rounded-lg text-white w-24 ml-4 h-16  max-md:hidden" onClick={() => sendhandler(prompt)}>Ask now</button>
           <button className="hidden bg-regal-blue rounded-full ml-5 w-8 h-8 items-center justify-center mt-9 max-md:flex"><SendHorizonal className="text-white w-1/2"/></button>
         </div>
         <div className="w-full mt-10">
