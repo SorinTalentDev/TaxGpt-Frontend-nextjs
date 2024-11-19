@@ -187,13 +187,6 @@ export default function Page() {
             }
             localStorage.removeItem('prompt');  // Remove the prompt after it's used
         }
-    
-        // Check login status and redirect if not logged in
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        console.log('Prompt from localStorage:', isLoggedIn);
-        if (isLoggedIn === 'false' || isLoggedIn === null) {
-            gotoLogout();  // Make sure this function does the necessary redirect/logout actions
-        }
     }, []);
     useEffect(() => {
         window.addEventListener('mousemove', handleUserInteraction );
@@ -204,6 +197,15 @@ export default function Page() {
           window.removeEventListener('keydown', handleUserInteraction );
         };
     });
+
+    useEffect(() => {
+        // Check login status and redirect if not logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        console.log('Prompt from localStorage:', isLoggedIn);
+        if (isLoggedIn === 'false' || isLoggedIn === null) {
+            gotoLogout();  // Make sure this function does the necessary redirect/logout actions
+        }
+    }, []);
 
     return(
         <div className="flex h-screen w-full bg-bg-main">
