@@ -89,7 +89,7 @@ export default function Page() {
             const userId = localStorage.getItem('userId');
             console.log(userId);
             try {
-                const response = await axios.post('http://localhost:5000/documents/get', {
+                const response = await axios.post('https://ltpoc-backend-b90752644b3c.herokuapp.com/documents/get', {
                     userId: userId
                 });
                 console.log(response.data);  // Check the response from the backend
