@@ -84,8 +84,7 @@ export default function Page() {
     };
 
     useEffect(() => {
-        // window.location.reload();
-        const fetchDocuments = async () => {
+            const fetchDocuments = async () => {
             const userId = localStorage.getItem('userId');
             console.log(userId);
             try {
@@ -109,7 +108,7 @@ export default function Page() {
         };
     
         fetchDocuments();
-    }, []);
+    }, [isModalOpen]);
     useEffect(() => {
         window.addEventListener('mousemove', handleUserInteraction );
         window.addEventListener('keydown', handleUserInteraction );
