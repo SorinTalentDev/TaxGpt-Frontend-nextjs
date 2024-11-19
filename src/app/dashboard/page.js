@@ -202,7 +202,7 @@ export default function Page() {
     useEffect(() => {
         // Check login status and redirect if not logged in
         const isLoggedIn = localStorage.getItem('isLoggedIn');
-        console.log('Prompt from localStorage:', isLoggedIn);
+        console.log('isLoggedIn from localStorage:', isLoggedIn);
         if (isLoggedIn === 'false' || isLoggedIn === null) {
             toast.error('Please login');
             gotoLogout();  // Make sure this function does the necessary redirect/logout actions
