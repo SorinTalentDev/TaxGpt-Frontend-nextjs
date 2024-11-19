@@ -117,7 +117,7 @@ const Modal = ({ isOpen, onClose }) => {
         console.log(localStorage.getItem('userId'));
         setUploadstate(1);
         try {
-            const response = await axios.post('http://localhost:5000/firebase/upload', data, {
+            const response = await axios.post('https://ltpoc-backend-b90752644b3c.herokuapp.com/firebase/upload', data, {
                 onUploadProgress: (progressEvent) => {
                     const { loaded, total } = progressEvent;
                     const percentage = Math.round((loaded * 100) / total);
