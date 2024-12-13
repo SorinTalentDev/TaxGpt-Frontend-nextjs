@@ -1,74 +1,143 @@
-import { useReactTable, getCoreRowModel, getPaginationRowModel, flexRender } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useTable, useSortBy, usePagination } from "react-table";
 
-export default function DataTable({ columns, data }) {
-    const [pageIndex, setPageIndex] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
+const DataTable = ({ columns, data }) => {
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page, // Page-specific rows
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    state: { pageIndex, pageSize },
+    gotoPage,
+    pageCount,
+    setPageSize,
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0, pageSize: 5 }, // Default to first page, 5 rows per page
+    },
+    useSortBy, // Sorting plugin
+    usePagination // Pagination plugin
+  );
 
-    const table = useReactTable({
-        columns,
-        data,
-        pageCount: Math.ceil(data.length / pageSize),
-        state: { pagination: { pageIndex, pageSize } },
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        manualPagination: true,
-        onPaginationChange: (updater) => {
-            const { pageIndex: newPageIndex, pageSize: newPageSize } = typeof updater === 'function' 
-                ? updater({ pageIndex, pageSize }) 
-                : updater;
-
-            setPageIndex(newPageIndex);
-            setPageSize(newPageSize);
-        },
-    });
-
-    return (
-        <div>
-            <table className="w-full border-2 bg-white">
-                <thead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <th key={header.id} className="border-2 text-center p-2 ">
-                                    {flexRender(header.column.columnDef.header, header.getContext())}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody>
-                    {table.getRowModel().rows.map(row => (
-                        <tr key={row.id} className="hover:bg-gray-100">
-                            {row.getVisibleCells().map(cell => (
-                                <td key={cell.id} className="border-2 p-2 text-center">
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div className="pagination mt-4 flex justify-between">
-                <button
-                    onClick={() => setPageIndex(prev => Math.max(0, prev - 1))}
-                    disabled={!table.getCanPreviousPage()}
-                    className='bg-regal-blue p-3 text-white rounded-xl'
+  return (
+    <div className="overflow-x-auto">
+      {/* Table */}
+      <table
+        {...getTableProps()}
+        className="table-auto border-collapse border border-gray-200 w-full text-sm text-left text-gray-500"
+      >
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr
+              {...headerGroup.getHeaderGroupProps()}
+              key={headerGroup.id}
+              className="bg-gray-100"
+            >
+              {headerGroup.headers.map((column) => (
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={column.id} // Ensure each header cell has a unique key
+                  className="px-4 py-2 border border-gray-200 cursor-pointer"
                 >
-                    Previous
-                </button>
-                <span>
-                    Page <strong>{table.getState().pagination.pageIndex + 1}</strong> of{' '}
-                    <strong>{table.getPageCount()}</strong>
-                </span>
-                <button
-                    onClick={() => setPageIndex(prev => Math.min(table.getPageCount() - 1, prev + 1))}
-                    disabled={!table.getCanNextPage()}
-                    className='bg-regal-blue p-3 text-white rounded-xl'
-                >
-                    Next
-                </button>
-            </div>
+                  {column.render("Header")}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? " 🔽"
+                        : " 🔼"
+                      : ""}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {page.map((row) => {
+            prepareRow(row);
+            return (
+              <tr
+                {...row.getRowProps()}
+                key={row.id || row.index}
+                className="hover:bg-gray-50"
+              >
+                {row.cells.map((cell) => (
+                  <td
+                    {...cell.getCellProps()}
+                    key={cell.column.id} // Ensure each cell has a unique key
+                    className="px-4 py-2 border border-gray-200"
+                  >
+                    {cell.render("Cell")}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center py-4">
+        {/* Page Info */}
+        <div className="flex items-center">
+          <span className="mr-4">
+            Page <strong>{pageIndex + 1}</strong> of{" "}
+            <strong>{pageOptions.length}</strong>
+          </span>
+          {/* Page Size Selector */}
+          <select
+            className="border px-2 py-1 rounded"
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+          >
+            {[5, 10, 20, 50].map((size) => (
+              <option key={size} value={size}>
+                Show {size}
+              </option>
+            ))}
+          </select>
         </div>
-    );
-}
+        {/* Navigation Buttons */}
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+            className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 disabled:opacity-50"
+          >
+            First
+          </button>
+          <button
+            onClick={previousPage}
+            disabled={!canPreviousPage}
+            className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button
+            onClick={nextPage}
+            disabled={!canNextPage}
+            className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 disabled:opacity-50"
+          >
+            Next
+          </button>
+          <button
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+            className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 disabled:opacity-50"
+          >
+            Last
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DataTable;

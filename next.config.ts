@@ -2,17 +2,21 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  env:{
-    API_URL:process.env.BACKEND_PUBLIC_API_URL,
+  reactStrictMode: true,
+  swcMinify: true,
+  env: {
+    NEXT_PUBLIC_BACKEND_API_URL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
+    NEXT_PUBLIC_SOCIAL_URL: process.env.NEXT_PUBLIC_SOCIAL_URL,
   },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-        pathname: '/v0/b/myaiwiz-storage.firebasestorage.app/**',
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+        pathname: "/v0/b/myaiwiz-storage.firebasestorage.app/**",
       },
     ],
+    domains: ["images.unsplash.com", "via.placeholder.com"],
   },
 };
 
