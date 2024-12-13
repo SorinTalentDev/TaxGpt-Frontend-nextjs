@@ -48,7 +48,7 @@ const LoginForm = () => {
       return;
     }
     setIsLoading(true);
-
+    console.log(process.env.NEXT_PUBLIC_BACKEND_API_URL);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/signin`,

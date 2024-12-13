@@ -5,7 +5,7 @@ import Loginsidebar from "../components/layout/LoginSidebar";
 import RegisterForm from "../components/layout/RegisterForm";
 import { useState } from "react";
 import Image from "next/image";
-
+import authImg from "./../Assets/image/authImg.png";
 // type Tab = "signup" | "login"; // Define the possible values for activeTab
 
 const Page: React.FC = () => {
@@ -28,7 +28,7 @@ const Page: React.FC = () => {
           </div>
           <div className="inline-block w-[40%] max-md:hidden">
             <Image
-              src="/image/authImg.png"
+              src={authImg}
               alt="login"
               width={400} // specify the width
               height={400} // specify the height

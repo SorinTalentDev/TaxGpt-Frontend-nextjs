@@ -4,6 +4,7 @@ import { ShieldCheck } from "lucide-react";
 import { FaUserPlus } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import LoginSub from "./../../Assets/image/login_sub.png";
 
 interface LoginSidebarProps {
   activeTab: string; // The current active tab state passed as a prop
@@ -31,7 +32,7 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
       <div className="flex flex-col mt-10 w-32">
         <div className="grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer">
           <Image
-            src="/image/login_sub.png"
+            src={LoginSub}
             layout="fixed"
             alt="sub"
             width={50}

@@ -5,6 +5,7 @@ import Loginsidebar from "../components/layout/LoginSidebar";
 import LoginForm from "../components/layout/LoginForm";
 import { useState } from "react";
 import Image from "next/image";
+import authImg from "./../Assets/image/authImg.png";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<string>("signin");
@@ -27,7 +28,7 @@ export default function Page() {
           <div className="inline-block w-[40%] max-md:hidden">
             {/* Updated Image Component */}
             <Image
-              src="/image/authImg.png"
+              src={authImg}
               alt="login"
               width={400} // specify the width
               height={400} // specify the height
