@@ -136,7 +136,10 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div ref={modalRef} className="bg-white rounded-lg p-6 w-96 relative">
+      <div
+        ref={modalRef}
+        className="bg-white rounded-lg p-6 w-96 relative dark:bg-[#1a1a1a]"
+      >
         <h2 className="text-lg font-bold mb-4">Swap Workspace</h2>
         <form onSubmit={handleFormSubmit}>
           <div className="relative mb-4">
@@ -148,7 +151,7 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
               onFocus={handleInputFocus} // Show dropdown on input focus
               onClick={handleInputClick} // Toggle dropdown on input click
               placeholder="Select a Workspace"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300 dark:text-black"
             />
             {/* Dropdown for workspace suggestions */}
             {isDropdownVisible && (
@@ -156,7 +159,7 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
                 {sampleWorkspaces.map((workspace) => (
                   <li
                     key={workspace}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    className="p-2 hover:bg-gray-200 cursor-pointer dark:text-black"
                     onClick={() => handleWorkspaceClick(workspace)} // Select workspace
                   >
                     {workspace}
@@ -170,7 +173,7 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
+              className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 dark:text-black"
             >
               Cancel
             </button>

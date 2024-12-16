@@ -27,7 +27,7 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
   };
 
   return (
-    <div className="bg-white shadow-md flex flex-col w-full relative">
+    <div className="bg-white shadow-md flex flex-col w-full relative dark:bg-[#0a0a0a]">
       {/* Tabs */}
       <div className="flex flex-col mt-10 w-32">
         <div className="grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer">
@@ -42,7 +42,9 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
         {/* Sign In Tab */}
         <div
           className={`grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer ${
-            activeTab === "signin" ? "text-blue-600 font-bold" : "text-gray-600"
+            activeTab === "signin"
+              ? "text-blue-600 font-bold"
+              : "text-gray-600 dark:text-white"
           }`}
           onClick={() => handleTabClick("signin")}
         >
@@ -53,7 +55,9 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
         {/* Sign Up Tab */}
         <div
           className={`grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer ${
-            activeTab === "signup" ? "text-blue-600 font-bold" : "text-gray-600"
+            activeTab === "signup"
+              ? "text-blue-600 font-bold"
+              : "text-gray-600 dark:text-white"
           }`}
           onClick={() => handleTabClick("signup")}
         >

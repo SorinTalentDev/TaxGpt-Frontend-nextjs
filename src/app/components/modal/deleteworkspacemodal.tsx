@@ -67,7 +67,7 @@ const DeleteWorkspaceModal: React.FC<DeleteWorkspaceModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-96 relative">
+      <div className="bg-white rounded-lg p-6 w-96 relative dark:bg-[#1a1a1a]">
         <h2 className="text-lg font-bold mb-4">Delete the Space</h2>
         <p className="mb-4">Are you sure you want to delete the workspace?</p>
 
@@ -75,7 +75,7 @@ const DeleteWorkspaceModal: React.FC<DeleteWorkspaceModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
+            className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 dark:text-black"
           >
             Cancel
           </button>

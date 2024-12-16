@@ -190,7 +190,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 height={20}
                 alt="mark"
               /> */}
-              <h3 className="text-xl font-semibold text-black font-Ambit">
+              <h3 className="text-xl font-semibold text-black font-Ambit dark:text-white">
                 Profile Settings
               </h3>
             </div>
@@ -198,7 +198,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <li className="mb-4">
                 <button
                   className={classNames(
-                    "w-full text-left hover:text-blue-500",
+                    "w-full text-left hover:text-blue-500 dark:text-white",
                     { "text-blue-500 font-bold": activeSection === "general" }
                   )}
                   onClick={() => setActiveSection("general")}
@@ -209,7 +209,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <li className="mb-4">
                 <button
                   className={classNames(
-                    "w-full text-left hover:text-blue-500",
+                    "w-full text-left hover:text-blue-500 dark:text-white",
                     {
                       "text-blue-500 font-bold":
                         activeSection === "changePassword",
@@ -227,7 +227,9 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
           <div className="w-3/4 px-6 py-10 flex flex-col h-full overflow-y-auto font-Ambit">
             {activeSection === "general" && (
               <div>
-                <h2 className="text-xl font-semibold mb-4">General Setting</h2>
+                <h2 className="text-xl font-semibold mb-4 dark:text-white">
+                  General Setting
+                </h2>
                 <div className="mb-4 flex items-center justify-center mt-10">
                   <img
                     src={user.profile_img}
@@ -249,10 +251,12 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     accept="image/*" // Accept only image files
                   />
                 </div>
-                <p className="mb-2 text-center mt-12 text-4xl">
+                <p className="mb-2 text-center mt-12 text-4xl dark:text-white">
                   {user.username}
                 </p>
-                <p className="mb-4 text-center mt-10">{user.email}</p>
+                <p className="mb-4 text-center mt-10 dark:text-white">
+                  {user.email}
+                </p>
               </div>
             )}
             {activeSection === "changePassword" && (
@@ -272,28 +276,28 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <div className="flex items-center justify-center mt-10">
                   <div onClick={toggleChangePasswordModal}></div>
                   <div className="bg-white dark:bg-[#222222] p-6 w-full">
-                    <h2 className="text-xl font-semibold mb-8">
+                    <h2 className="text-xl font-semibold mb-8 dark:text-white">
                       Change Password
                     </h2>
                     <form onSubmit={handlePasswordSubmit}>
                       <div className="mb-8">
-                        <label className="block text-sm font-medium mb-2">
+                        <label className="block text-sm font-medium mb-2 dark:text-white">
                           New Password
                         </label>
                         <input
                           type="password"
-                          className="block w-full p-2 border border-gray-300 rounded"
+                          className="block w-full p-2 border border-gray-300 rounded dark:text-black"
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
                         />
                       </div>
                       <div className="mb-8">
-                        <label className="block text-sm font-medium mb-2">
+                        <label className="block text-sm font-medium mb-2 dark:text-white">
                           Confirm Password
                         </label>
                         <input
                           type="password"
-                          className="block w-full p-2 border border-gray-300 rounded"
+                          className="block w-full p-2 border border-gray-300 rounded dark:text-black"
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                         />

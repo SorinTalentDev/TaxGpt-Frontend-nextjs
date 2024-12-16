@@ -121,7 +121,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="bg-white py-[5%] w-[50%] px-[10%] max-md:w-full max-md:bg-login-second-color">
+    <div className="bg-white py-[5%] w-[50%] px-[10%] max-md:w-full max-md:bg-login-second-color dark:bg-[#0a0a0a]">
       <p className="text-left pb-11">
         Don't have an account?{" "}
         <Link href="/signup" className="text-blue-700">
@@ -133,11 +133,11 @@ const LoginForm = () => {
       <div className="group w-full">
         <label
           htmlFor="email"
-          className="inline-block w-full text-xl font-medium text-black transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
+          className="inline-block w-full text-xl font-medium text-black transition-all duration-200 ease-in-out group-focus-within:text-blue-400 dark:text-white"
         >
           E-mail
         </label>
-        <div className="relative flex items-center">
+        <div className="relative flex items-center dark:text-black">
           <input
             id="email"
             type="email"
@@ -163,10 +163,10 @@ const LoginForm = () => {
       </div>
 
       {/* Password Input */}
-      <div className="group w-full pt-4">
+      <div className="group w-full pt-4 dark:text-black">
         <label
           htmlFor="password"
-          className="inline-block w-full text-xl font-medium text-black transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
+          className="inline-block w-full text-xl font-medium text-black transition-all duration-200 ease-in-out group-focus-within:text-blue-400 dark:text-white"
         >
           Password
         </label>
@@ -213,7 +213,7 @@ const LoginForm = () => {
         <div className="flex items-center justify-center h-12 bg-gray-100 dark:bg-gray-700 w-full">
           <button
             onClick={handleGoogleLogin}
-            className="flex h-12 justify-center items-center w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            className="flex h-12 justify-center items-center w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:hover:text-black"
           >
             <svg
               className="h-6 w-6 mr-2"

@@ -139,16 +139,16 @@ const Navbar = (props: Props) => {
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="absolute right-8 mt-32 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50"
+            className="absolute right-8 mt-32 w-48 bg-white rounded-lg shadow-lg z-50 dark:bg-[#1a1a1a]"
           >
             <button
-              className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100"
+              className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100 dark:text-white dark:hover:bg-black"
               onClick={openProfileModal}
             >
               <span className="mx-1">Profile Settings</span>
             </button>
             <button
-              className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100"
+              className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100 dark:text-white dark:hover:bg-black"
               onClick={gotologout}
             >
               <span className="mx-1">Logout</span>

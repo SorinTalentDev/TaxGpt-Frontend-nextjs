@@ -45,7 +45,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
     <div>
       <button
         onClick={openModal}
-        className="hover:bg-gray-400 flex p-3 ml-3 bg-gray-300 rounded-full items-center max-md:hidden"
+        className="hover:bg-gray-400 flex p-3 ml-3 bg-gray-300 rounded-full items-center max-md:hidden dark:bg-[#1a1a1a]"
       >
         <img
           width="20"
@@ -64,17 +64,20 @@ const SocialShare: React.FC<SocialShareProps> = ({
           onClick={closeModal}
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-lg w-96"
+            className="bg-white p-6 rounded-lg shadow-lg w-96 dark:bg-[#1a1a1a]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h2
                 id="share-modal-title"
-                className="font-bold text-lg text-gray-800"
+                className="font-bold text-lg text-gray-800 dark:text-white"
               >
                 Share this Workspace
               </h2>
-              <button onClick={closeModal} className="text-gray-600">
+              <button
+                onClick={closeModal}
+                className="text-gray-600 dark:text-white"
+              >
                 <X />
               </button>
             </div>

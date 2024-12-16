@@ -5,6 +5,14 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get("authToken");
   const currentPath = request.nextUrl.pathname;
 
+  if (
+    currentPath === "/admin/login" ||
+    currentPath === "/admin/dashboard" ||
+    currentPath === "/admin"
+  ) {
+    return;
+  }
+
   // Handle logout scenario: delete the authToken cookie
   if (request.nextUrl.searchParams.has("logout")) {
     console.log("Middleware: Logout detected, deleting authToken cookie.");
