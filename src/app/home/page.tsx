@@ -9,6 +9,7 @@ import TextLoading from "../components/layout/TextLoading";
 import RenderMessage from "../components/layout/RenderMessage";
 import Image from "next/image";
 import Typewriter from "../components/layout/Typewriter";
+import logo from "./../Assets/image/logo.png";
 
 interface Message {
   role: string;
@@ -233,12 +234,7 @@ export default function Page() {
                 ) : (
                   <div className="w-full flex">
                     <div className="m-2">
-                      <Image
-                        src="/image/mark.png"
-                        alt="logo"
-                        width={30}
-                        height={30}
-                      />
+                      <Image src={logo} alt="logo" width={30} height={30} />
                     </div>
                     <div className="bg-blue-100 text-black w-full p-4 text-lg rounded-xl mb-6 font-Ambit">
                       <RenderMessage message={message} />
