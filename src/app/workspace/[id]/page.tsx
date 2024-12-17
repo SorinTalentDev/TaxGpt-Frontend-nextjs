@@ -10,6 +10,7 @@ import { RxAvatar } from "react-icons/rx";
 import Image from "next/image";
 import RenderMessage from "@/app/components/layout/RenderMessage";
 import TextLoading from "@/app/components/layout/TextLoading";
+import logo from "./../../Assets/image/logo.png";
 import {
   ArrowDown,
   // ArrowRight,
@@ -377,7 +378,7 @@ export default function EditWorkspace({
                         <div className="w-full flex">
                           <div className="m-2">
                             <Image
-                              src="/image/mark.png"
+                              src={logo}
                               alt="logo"
                               width={30}
                               height={30}

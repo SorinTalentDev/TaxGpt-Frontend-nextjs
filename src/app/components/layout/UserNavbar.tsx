@@ -123,7 +123,7 @@ const Navbar = (props: Props) => {
         </button>
         <button
           onClick={toggleDarkMode}
-          className="mx-6 hover:text-black dark:text-white"
+          className="mx-6 hover:text-black dark:text-white hidden"
         >
           <Moon />
         </button>
