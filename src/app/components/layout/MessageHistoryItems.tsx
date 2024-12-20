@@ -131,7 +131,8 @@ const MessageHistoryItem = ({
             </span>
           ) : (
             // Show Plus button if workspaceName is empty
-            currentUrl !== "https://app.myaiwiz.com//share" && (
+            currentUrl &&
+            currentUrl !== "https://app.myaiwiz.com/share" && (
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="rounded-full hover:bg-gray-700 focus:outline-none p-2"
@@ -141,7 +142,7 @@ const MessageHistoryItem = ({
             )
           )}
 
-          {currentUrl !== "https://app.myaiwiz.com//share" && (
+          {currentUrl && currentUrl !== "https://app.myaiwiz.com/share" && (
             <button
               onClick={(e) => {
                 e.stopPropagation(); // Prevent click from toggling the message
