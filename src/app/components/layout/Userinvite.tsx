@@ -19,29 +19,26 @@ const EmailShare: React.FC<EmailShareProps> = ({
   }/share/${dynamicContentId}?title=${encodeURIComponent(
     dynamicContentTitle
   )}&Shared=${encodeURIComponent(dynamicContentSharedUserId)}`;
-  const subject = `You're invited from: ${dynamicContentTitle}`;
+  const subject = `You're invited to: ${dynamicContentTitle}`;
   const appName = "app.myaiwiz.com";
 
   const sendEmail = () => {
-    const htmlBody = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <h2 style="color: #007BFF;">You're Invited!</h2>
-        <p>
-          You've been invited to <strong>${appName}</strong>. Click the link below to accept the invitation:
-        </p>
-        <a
-          href="${customShareUrl}"
-          style="background-color: #20b8cd; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;"
-        >
-          Click Here
-        </a>
-        <p>If the button doesn't work, copy and paste the following URL into your browser:</p>
-        <p>${customShareUrl}</p>
-      </div>
+    const plainTextBody = `
+You're Invited to ${appName}!
+
+You've been invited to join ${dynamicContentTitle}. Please use the link below to access the shared workspace:
+
+Click Here: ${customShareUrl}
+
+If the button above does not work, copy and paste the following URL into your browser:
+${customShareUrl}
+
+Thank you,
+The ${appName} Team
     `;
     window.open(
       `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-        htmlBody
+        plainTextBody
       )}`
     );
   };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   // ArrowDown,
   ArrowLeftRight,
@@ -44,7 +44,7 @@ const MessageHistoryItem = ({
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentWorkspace, setCurrentWorkspace] = useState("");
-
+  const [currentUrl, setCurrentUrl] = useState<string>("");
   // Helper function to truncate the userMessage
   const getTruncatedMessage = (message: string, maxLength: number) => {
     return message.length > maxLength
@@ -68,7 +68,18 @@ const MessageHistoryItem = ({
     // Implement the logic for removing from the space here.
     fetchMessageHistory();
   };
+  // Add current URL to state
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const fullUrl = window.location.href;
+      const url = new URL(fullUrl);
 
+      // Split the pathname and take the desired part
+      const segments = url.pathname.split("/").slice(1, 3).join("/");
+      const extractedBaseUrl = `${url.protocol}//${url.hostname}/${segments}`;
+      setCurrentUrl(extractedBaseUrl);
+    }
+  }, []);
   return (
     <div
       id={id}
@@ -118,24 +129,27 @@ const MessageHistoryItem = ({
             </span>
           ) : (
             // Show Plus button if workspaceName is empty
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="rounded-full hover:bg-gray-700 focus:outline-none p-2"
-            >
-              <Plus />
-            </button>
+            currentUrl !== "https://app.myaiwiz.com//share" && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="rounded-full hover:bg-gray-700 focus:outline-none p-2"
+              >
+                <Plus />
+              </button>
+            )
           )}
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent click from toggling the message
-              setIsDropdownOpen((prev) => !prev);
-            }}
-            className="text-white p-2 rounded-full dark:hover:bg-gray-700 hover:bg-gray-300 focus:outline-none"
-          >
-            <Ellipsis className="text-[#828686]" />
-          </button>
-
+          {currentUrl !== "https://app.myaiwiz.com//share" && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent click from toggling the message
+                setIsDropdownOpen((prev) => !prev);
+              }}
+              className="text-white p-2 rounded-full dark:hover:bg-gray-700 hover:bg-gray-300 focus:outline-none"
+            >
+              <Ellipsis className="text-[#828686]" />
+            </button>
+          )}
           {isDropdownOpen && (
             <div
               className={classNames(
