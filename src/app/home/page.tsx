@@ -180,7 +180,7 @@ export default function Page() {
                   <div className="flex justify-end w-full items-center">
                     <div className="text-black text-lg text-right">
                       <div
-                        className={`message ${message.role} bg-gray-200 inline-block p-4 rounded-full font-Ambit dark:bg-[#1c1c1c] text-white`}
+                        className={`message ${message.role} bg-gray-200 inline-block p-4 rounded-full font-Ambit text-black dark:bg-[#1c1c1c] dark:text-white`}
                       >
                         {message.content}
                       </div>
