@@ -3,12 +3,6 @@
 import { X, Copy } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
-import {
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
-  TelegramIcon,
-} from "react-share";
 
 // Define the props to accept dynamic data
 interface SocialShareProps {
@@ -92,10 +86,6 @@ const SocialShare: React.FC<SocialShareProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* <FacebookIcon
-                  className="rounded-full hover:opacity-80"
-                  size={40}
-                /> */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 40 40"
@@ -122,10 +112,6 @@ const SocialShare: React.FC<SocialShareProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* <TwitterIcon
-                  className="rounded-full hover:opacity-80"
-                  size={40}
-                /> */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -158,10 +144,6 @@ const SocialShare: React.FC<SocialShareProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* <WhatsappIcon
-                  className="rounded-full hover:opacity-80"
-                  size={40}
-                /> */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -191,10 +173,6 @@ const SocialShare: React.FC<SocialShareProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* <TelegramIcon
-                  className="rounded-full hover:opacity-80"
-                  size={40}
-                /> */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
