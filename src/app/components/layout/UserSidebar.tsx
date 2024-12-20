@@ -186,7 +186,7 @@ const Sidebar = ({
   // Handle item click
   const handleItemClick = (index: number) => {
     if (index === 0) {
-      alert("ok!");
+      // alert("ok!");
       const firstGroupKey = Object.keys(groupedItems)[0];
       if (firstGroupKey && groupedItems[firstGroupKey].length > 0) {
         const firstGroup = groupedItems[firstGroupKey][0]; // First group in the first category
