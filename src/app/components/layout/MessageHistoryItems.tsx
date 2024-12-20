@@ -75,8 +75,10 @@ const MessageHistoryItem = ({
       const url = new URL(fullUrl);
 
       // Split the pathname and take the desired part
-      const segments = url.pathname.split("/").slice(1, 3).join("/");
-      const extractedBaseUrl = `${url.protocol}//${url.hostname}/${segments}`;
+      const extractedBaseUrl = `${url.origin}${url.pathname
+        .split("/")
+        .slice(0, 3)
+        .join("/")}`;
       setCurrentUrl(extractedBaseUrl);
     }
   }, []);
