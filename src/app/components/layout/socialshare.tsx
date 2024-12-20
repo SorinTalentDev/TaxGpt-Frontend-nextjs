@@ -1,6 +1,7 @@
 "use client";
 
 import { X, Copy } from "lucide-react";
+import Link from "next/link";
 import React, { useState } from "react";
 import {
   FacebookIcon,
@@ -84,7 +85,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
 
             <div className="flex justify-around mb-6">
               {/* Facebook */}
-              <a
+              <Link
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                   customShareUrl
                 )}`}
@@ -111,10 +112,10 @@ const SocialShare: React.FC<SocialShareProps> = ({
                     d="M27.785 25.781 28.672 20H23.125v-3.752c0 -1.582 0.775 -3.123 3.259 -3.123h2.522V8.203s-2.289 -0.391 -4.477 -0.391c-4.568 0 -7.554 2.769 -7.554 7.781V20H11.797v5.781h5.078v13.976a20.21 20.21 0 0 0 6.25 0V25.781Z"
                   />
                 </svg>
-              </a>
+              </Link>
 
               {/* Twitter */}
-              <a
+              <Link
                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
                   customShareUrl
                 )}&text=${encodeURIComponent(customShareText)}`}
@@ -147,10 +148,10 @@ const SocialShare: React.FC<SocialShareProps> = ({
                     />
                   </g>
                 </svg>
-              </a>
+              </Link>
 
               {/* WhatsApp */}
-              <a
+              <Link
                 href={`https://wa.me/?text=${encodeURIComponent(
                   customShareText + " " + customShareUrl
                 )}`}
@@ -180,10 +181,10 @@ const SocialShare: React.FC<SocialShareProps> = ({
                     clipRule="evenodd"
                   />
                 </svg>
-              </a>
+              </Link>
 
               {/* Telegram */}
-              <a
+              <Link
                 href={`https://t.me/share/url?url=${encodeURIComponent(
                   customShareUrl
                 )}&text=${encodeURIComponent(customShareText)}`}
@@ -234,7 +235,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
                     </path>
                   </defs>
                 </svg>
-              </a>
+              </Link>
             </div>
 
             {/* Copy Link */}
