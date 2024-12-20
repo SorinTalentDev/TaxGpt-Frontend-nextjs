@@ -86,7 +86,6 @@ export default function Page() {
           localStorage.setItem("currentGroupItems", input);
         }
         const groupBy = localStorage.getItem("currentGroupItems");
-        alert(groupBy);
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/send-message`,
           {

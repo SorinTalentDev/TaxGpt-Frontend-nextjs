@@ -138,25 +138,25 @@ const Sidebar = ({
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const groupBy = localStorage.getItem("currentGroupItems");
-      const createDate = localStorage.getItem("currentDate");
+    // Save the first item of the first group to localStorage if no selection exists
+    if (!localStorage.getItem("selectedGroup")) {
+      const firstGroupKey = Object.keys(groupedItems)[0];
+      if (firstGroupKey && groupedItems[firstGroupKey].length > 0) {
+        const firstGroup = groupedItems[firstGroupKey][0]; // First group in the first category
+        const firstItem = firstGroup.groups[0]; // First item in the first group
 
-      if (groupBy && createDate) {
-        const group = groupedItems?.today?.find(
-          (item: any) =>
-            item.groupBy === groupBy && item.createdDate === createDate
-        );
-
-        if (group) {
-        } else {
+        if (firstItem) {
+          localStorage.setItem(
+            "selectedGroup",
+            JSON.stringify({
+              groupBy: firstItem.groupBy,
+              createdDate: firstGroup.createdDate,
+            })
+          );
         }
       }
-    }, 1000); // Run every 1 second
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+    }
+  }, [groupedItems]);
 
   const handlesetMessages = (items: string, date: string) => {
     localStorage.setItem("currentGroupItems", items);
@@ -185,6 +185,24 @@ const Sidebar = ({
 
   // Handle item click
   const handleItemClick = (index: number) => {
+    if (index === 0) {
+      alert("ok!");
+      const firstGroupKey = Object.keys(groupedItems)[0];
+      if (firstGroupKey && groupedItems[firstGroupKey].length > 0) {
+        const firstGroup = groupedItems[firstGroupKey][0]; // First group in the first category
+        const firstItem = firstGroup.groups[0]; // First item in the first group
+
+        if (firstItem) {
+          localStorage.setItem(
+            "selectedGroup",
+            JSON.stringify({
+              groupBy: firstItem.groupBy,
+              createdDate: firstGroup.createdDate,
+            })
+          );
+        }
+      }
+    }
     setSelectedIndex(index);
   };
 
@@ -244,28 +262,42 @@ const Sidebar = ({
             })}
           </ul>
 
-          <hr />
+          <hr className="mb-3" />
           {!collapsed && currentUrl === "https://app.myaiwiz.com/home" && (
-            <div className="scrollbar-thin overflow-y-visible">
+            <div className="scrollbar-track-black overflow-y-auto h-[calc(100vh-280px)]">
               {Object.keys(groupedItems).map((groupKey) => (
                 <div key={groupKey}>
-                  <h3 className="font-bold text-lg mx-5 py-3">
-                    {groupedItems[groupKey].length > 0 &&
-                      groupKey.replace(/([A-Z])/g, " $1")}
+                  <h3 className="font-bold text-lg mx-5">
+                    {
+                      groupedItems[groupKey].length > 0 &&
+                        groupKey
+                          .replace(/([a-z])([A-Z])/g, "$1 $2") // Add space before uppercase letters
+                          .replace(/\b\w/g, (char) => char.toUpperCase()) // Capitalize first letter of each word
+                    }
                   </h3>
                   {groupedItems[groupKey].map((group: any) => (
                     <div key={group.createdDate}>
-                      {group.groups.map((item: any) => {
+                      {group.groups.map((item: any, index: number) => {
+                        // Determine if this item should be selected based on `selectedGroup`
                         const isSelected =
-                          selectedGroup?.groupBy === item.groupBy &&
-                          selectedGroup?.createdDate === group.createdDate;
+                          (index === 0 && !selectedGroup) || // Select the first item by default
+                          (selectedGroup?.groupBy === item.groupBy &&
+                            selectedGroup?.createdDate === group.createdDate);
 
                         return (
                           <div
                             key={item.groupBy}
-                            onClick={() =>
-                              handleGroupClick(item.groupBy, group.createdDate)
-                            }
+                            onClick={() => {
+                              // Update `selectedGroup` on click
+                              handleGroupClick(item.groupBy, group.createdDate);
+                              localStorage.setItem(
+                                "selectedGroup",
+                                JSON.stringify({
+                                  groupBy: item.groupBy,
+                                  createdDate: group.createdDate,
+                                })
+                              );
+                            }}
                             className={`p-2 mx-3 rounded-xl my-1 ${
                               isSelected
                                 ? "bg-slate-600 text-white"

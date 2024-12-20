@@ -171,7 +171,7 @@ export default function Page() {
             <p className="font-medium text-2xl mx-3">Threads</p>
           </div>
         </div>
-        <div className="h-[calc(100vh-250px)] inline-block overflow-y-auto mx-6 w-[90%] max-md:w-[88%] max-[350px]:w-[83%] max-[375px]:w-[85%] scrollbar-none">
+        <div className="h-[calc(100vh-250px)] inline-block overflow-y-auto w-[100%] max-md:w-[88%] max-[350px]:w-[83%] max-[375px]:w-[85%] scrollbar-track-black pl-8 pr-[120px]">
           <Threads
             messageHistory={filteredHistory}
             fetchMessageHistory={fetchMessageHistory}
