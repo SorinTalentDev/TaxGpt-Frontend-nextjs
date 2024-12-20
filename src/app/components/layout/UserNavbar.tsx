@@ -88,7 +88,7 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
       })}
     >
       <div className="flex-grow relative group">
-        {currentUrl === "http://localhost:3000/home" && (
+        {currentUrl === "https://app.myaiwiz.com/home" && (
           <button
             onClick={newChathandler}
             className="relative ml-5 items-center flex"

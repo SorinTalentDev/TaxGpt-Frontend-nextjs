@@ -245,7 +245,7 @@ const Sidebar = ({
           </ul>
 
           <hr />
-          {!collapsed && currentUrl === "http://localhost:3000/home" && (
+          {!collapsed && currentUrl === "https://app.myaiwiz.com/home" && (
             <div className="scrollbar-thin overflow-y-visible">
               {Object.keys(groupedItems).map((groupKey) => (
                 <div key={groupKey}>
