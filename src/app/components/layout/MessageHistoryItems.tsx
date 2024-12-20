@@ -72,14 +72,18 @@ const MessageHistoryItem = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const fullUrl = window.location.href;
-      const url = new URL(fullUrl);
+      const parsedUrl = new URL(fullUrl);
 
+      // Log the full URL to see what's happening
+      console.log("Full URL:", fullUrl);
+      console.log("Parsed URL:", parsedUrl);
       // Split the pathname and take the desired part
-      const extractedBaseUrl = `${url.origin}${url.pathname
+      const extractedBaseUrl = `${parsedUrl.origin}${parsedUrl.pathname
         .split("/")
-        .slice(0, 3)
+        .slice(0, 2)
         .join("/")}`;
       setCurrentUrl(extractedBaseUrl);
+      console.log("currentUrl: ", extractedBaseUrl);
     }
   }, []);
   return (
