@@ -5,9 +5,17 @@ import React, { PropsWithChildren, useState } from "react";
 import Navbar from "./UserNavbar";
 import Sidebar from "./UserSidebar";
 
-const Layout = (props: PropsWithChildren) => {
+type LayoutProps = {
+  clearMessages: () => void; // Accept clearMessages function as a prop
+};
+
+const Layout = ({
+  clearMessages,
+  children,
+}: PropsWithChildren<LayoutProps>) => {
   const [collapsed, setSidebarCollapsed] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
+
   return (
     <div
       className={classNames({
@@ -21,10 +29,14 @@ const Layout = (props: PropsWithChildren) => {
         collapsed={collapsed}
         setCollapsed={setSidebarCollapsed}
         shown={showSidebar}
+        clearMessages={clearMessages} // Pass the function here
       />
       <div className="">
-        <Navbar onMenuButtonClick={() => setShowSidebar((prev) => !prev)} />
-        {props.children}
+        <Navbar
+          onMenuButtonClick={() => setShowSidebar((prev) => !prev)}
+          clearMessages={clearMessages}
+        />
+        {children}
       </div>
     </div>
   );

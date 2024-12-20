@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { auth } from "./../firebase/firebase"; // Firebase authentication methods
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; // Firebase methods
 import { setCookie } from "nookies";
+import ForgotPasswordModal from "../modal/forgotpassword";
 
 const LoginForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -20,6 +21,8 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false); // State for modal visibility
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -37,7 +40,13 @@ const LoginForm = () => {
     setPassword(value);
     // setIsPasswordValid(value.length >= 8);
   };
+  const openForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(true);
+  };
 
+  const closeForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(false);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsFormSubmitted(true);
@@ -192,7 +201,11 @@ const LoginForm = () => {
           </p>
         )}
       </div>
-
+      <div className="flex justify-end my-3 hidden">
+        <button onClick={openForgotPasswordModal}>
+          <p className="text-blue-600">Forgot password?</p>
+        </button>
+      </div>
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
@@ -286,6 +299,9 @@ const LoginForm = () => {
         Free Research Preview Bot Buzz may produce inaccurate information about
         people, places, or facts. BotBuzz Version2.0
       </p> */}
+      {isForgotPasswordModalOpen && (
+        <ForgotPasswordModal onClose={closeForgotPasswordModal} />
+      )}
     </div>
   );
 };

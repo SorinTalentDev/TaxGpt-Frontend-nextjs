@@ -28,6 +28,7 @@ import axios from "axios";
 import DeleteWorkspaceModal from "@/app/components/modal/deleteworkspacemodal";
 import SocialShare from "@/app/components/layout/socialshare";
 import Spinner from "@/app/components/layout/Spinner";
+import UserInvite from "@/app/components/layout/Userinvite";
 
 // Define the types for the message and response data
 interface Message {
@@ -204,6 +205,9 @@ export default function EditWorkspace({
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  const clearMessages = () => {
+    setMessages([]); // Clears the messages state
+  };
   useEffect(() => {
     scrollToBottom(); // Automatically scroll to bottom on new messages
   }, [messages]);
@@ -217,7 +221,7 @@ export default function EditWorkspace({
   if (!id) {
     // Render a loading state until the `id` is available
     return (
-      <Layout>
+      <Layout clearMessages={clearMessages}>
         <div>Loading...</div>
       </Layout>
     );
@@ -280,15 +284,20 @@ export default function EditWorkspace({
   };
 
   return (
-    <Layout>
+    <Layout clearMessages={clearMessages}>
       <div className="dark:bg-[#191a1a] h-[calc(100vh-73px)] max-md:w-screen">
         <div className="flex items-center justify-between text-white border-b-2 p-3 border-b-gray-300 dark:border-b-[#2b2c2d]">
           <div className="flex items-center text-5xl max-md:hidden">
             <RxAvatar className=" text-black dark:text-white max-md:hidden hidden" />
-            <button className="flex items-center mx-5 text-[#20b8cd] max-md:mx-0 hidden">
+            {/* <button className="flex items-center mx-5 text-[#20b8cd] max-md:mx-0">
               <UserPlus />
               <p className="text-lg mx-2 max-md:mx-0 max-md:ml-2">Invite</p>
-            </button>
+            </button> */}
+            <UserInvite
+              dynamicContentId={id}
+              dynamicContentTitle={workspaceName}
+              dynamicContentSharedUserId={sharedUserId}
+            />
           </div>
           <div className="flex dark:text-[#8d9191] text-lg items-center text-black">
             <Slack className="mx-2 max-md:mx-1" />

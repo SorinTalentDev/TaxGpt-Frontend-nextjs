@@ -10,25 +10,7 @@ import RenderMessage from "../components/layout/RenderMessage";
 import Image from "next/image";
 import Typewriter from "../components/layout/Typewriter";
 import logo from "./../Assets/image/logo.png";
-
-interface Message {
-  role: string;
-  message: string;
-}
-
-interface MessageData {
-  _id: string;
-  createddate: string;
-  messages: Message[];
-  userId: string;
-  workspaceName: string | null;
-}
-
-interface ResponseData {
-  success: number;
-  data: MessageData[];
-  message: string;
-}
+import { fetchMessageHistory } from "../utils/fetchmessage";
 
 export default function Page() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
@@ -41,77 +23,44 @@ export default function Page() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [profileUrl, SetProfileUrl] = useState();
 
-  const fetchMessageHistory = async () => {
-    try {
-      const storedData = localStorage.getItem("userdata");
-      let userId: string | null = null;
+  const fetchMessages = async () => {
+    const storedData = localStorage.getItem("userdata");
+    let userId: string | null = null;
 
-      if (storedData !== null) {
-        const parsedData = JSON.parse(storedData);
-        userId = parsedData._id;
-      } else {
-        console.log("No data found in localStorage under 'userdata'.");
-      }
-
-      if (!userId) {
-        console.log("User ID is missing. Cannot fetch messages.");
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.post<ResponseData>(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/message/get`,
-        { userId }
-      );
-
-      if (response.data.success === 1 && response.data.data) {
-        // Get today's date in "YYYY-MM-DD" format
-        const today = new Date().toISOString().split("T")[0];
-
-        const formattedMessages = response.data.data.flatMap((messageData) => {
-          // Filter by today's date
-          const messageDate = new Date(messageData.createddate)
-            .toISOString()
-            .split("T")[0];
-
-          if (messageDate === today) {
-            const userMessage =
-              messageData.messages.find((message) => message.role === "user")
-                ?.message || "";
-            const assistantMessage =
-              messageData.messages.find(
-                (message) => message.role === "assistant"
-              )?.message || "";
-
-            return [
-              {
-                role: "user",
-                content: userMessage,
-              },
-              {
-                role: "assistant",
-                content: assistantMessage,
-              },
-            ];
-          }
-          return [];
-        });
-
-        setMessages(formattedMessages); // Set the state with filtered messages
-      } else {
-        console.log("Failed to fetch messages:", response.data.message);
-        setMessages([]); // Clear messages if fetching fails
-      }
-    } catch (error) {
-      console.log("Error fetching message history:", error);
-      setMessages([]); // Handle error gracefully
-    } finally {
-      setLoading(false);
+    if (storedData !== null) {
+      const parsedData = JSON.parse(storedData);
+      userId = parsedData._id;
     }
+
+    if (!userId) {
+      console.log("User ID is missing. Cannot fetch messages.");
+      return;
+    }
+    // const today = new Date().toISOString().split("T")[0];
+    const groupBy = localStorage.getItem("currentGroupItems") || ""; // Default to an empty string if groupBy is null
+    const date = localStorage.getItem("currentDate") || "";
+    const formattedMessages = await fetchMessageHistory(userId, date, groupBy);
+
+    setMessages(formattedMessages);
   };
+  const clearMessages = () => {
+    setMessages([]); // Clears the messages state
+  };
+  useEffect(() => {
+    fetchMessages();
+  }, []);
 
   useEffect(() => {
-    fetchMessageHistory();
+    const interval = setInterval(() => {
+      if (localStorage.getItem("ChangeSidebarState") === "true") {
+        clearMessages();
+        fetchMessages();
+        localStorage.setItem("ChangeSidebarState", "false");
+      }
+    }, 1000); // Run every 1 second
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const handleSendMessage = async () => {
@@ -132,9 +81,20 @@ export default function Page() {
           console.log("No data found in localStorage under 'userdata'.");
         }
 
+        if (messages.length == 0) {
+          // console.log("message: ", messages);
+          localStorage.setItem("currentGroupItems", input);
+        }
+        const groupBy = localStorage.getItem("currentGroupItems");
+        alert(groupBy);
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/send-message`,
-          { messages: input, sessionId: userId, workspaceId: "" } // `userId` is accessible here
+          {
+            messages: input,
+            sessionId: userId,
+            workspaceId: "",
+            groupBy: groupBy,
+          } // `userId` is accessible here
         );
 
         const assistantMessage = response.data.assistantResponse;
@@ -143,6 +103,9 @@ export default function Page() {
           ...prev,
           { role: "assistant", content: assistantMessage },
         ]);
+        if (messages.length < 3) {
+          localStorage.setItem("refreshSidebar", "true");
+        }
         scrollToBottom();
         setLoading(false);
       } catch (error) {
@@ -198,12 +161,12 @@ export default function Page() {
   }, [messages]);
 
   return (
-    <Layout>
-      <div className="flex flex-col h-[calc(100vh-73px)] p-4 max-md:w-screen m-auto relative dark:bg-[#232324]">
+    <Layout clearMessages={clearMessages}>
+      <div className="flex flex-col h-[calc(100vh-73px)] py-4 max-md:w-screen m-auto relative dark:bg-[#232324]">
         {/* Messages Container */}
         <div
           ref={messagesContainerRef}
-          className="flex-grow overflow-y-auto w-[50%] max-md:w-[100%] m-auto scrollbar-none"
+          className="flex-grow overflow-y-auto w-full max-md:w-[100%] m-auto scrollbar-track-current px-[25%] max-md:px-3"
         >
           <div className="flex-col gap-4 flex">
             {messages.map((message, index) => (
@@ -217,7 +180,7 @@ export default function Page() {
                   <div className="flex justify-end w-full items-center">
                     <div className="text-black text-lg text-right">
                       <div
-                        className={`message ${message.role} bg-gray-200 inline-block p-4 rounded-full font-Ambit`}
+                        className={`message ${message.role} bg-gray-200 inline-block p-4 rounded-full font-Ambit dark:bg-[#1c1c1c] text-white`}
                       >
                         {message.content}
                       </div>
@@ -236,7 +199,7 @@ export default function Page() {
                     <div className="m-2">
                       <Image src={logo} alt="logo" width={30} height={30} />
                     </div>
-                    <div className="bg-blue-100 text-black w-full p-4 text-lg rounded-xl mb-6 font-Ambit">
+                    <div className="bg-blue-100 text-black w-full p-4 text-lg rounded-xl mb-6 font-Ambit dark:bg-[#1a1a1a] dark:text-white">
                       <RenderMessage message={message} />
                     </div>
                   </div>

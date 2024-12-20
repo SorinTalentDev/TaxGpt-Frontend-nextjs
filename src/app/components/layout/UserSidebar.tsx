@@ -7,14 +7,30 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
-import { usePathname } from "next/navigation"; // Import usePathname
+import { usePathname } from "next/navigation";
+import { fetchnavbaritems } from "@/app/utils/fetchnavbaritems";
 
+// Define the props interface
 type Props = {
   collapsed: boolean;
   navItems?: NavItem[];
   setCollapsed(collapsed: boolean): void;
   shown: boolean;
+  clearMessages: () => void;
 };
+
+interface GroupItem {
+  groupBy: string;
+  latestDate: string;
+}
+
+interface GroupedData {
+  today: GroupItem[];
+  yesterday: GroupItem[];
+  previous7Days: GroupItem[];
+  previous14Days: GroupItem[];
+  previous20Days: GroupItem[];
+}
 
 const Sidebar = ({
   collapsed,
@@ -22,18 +38,154 @@ const Sidebar = ({
   shown,
   setCollapsed,
 }: Props) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // Track selected item
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const pathname = usePathname(); // Get current pathname
   const Icon = collapsed ? ChevronDoubleRightIcon : ChevronDoubleLeftIcon;
+  const [currentUrl, setCurrentUrl] = useState<string>("");
+  const [groupedItems, setGroupedItems] = useState<any>([]); // State to hold grouped items
+  const [selectedGroup, setSelectedGroup] = useState<{
+    groupBy: string;
+    createdDate: string;
+  } | null>(null);
+
+  // Group response data by date ranges (today, yesterday, etc.)
+  const groupByDateRange = (data: any[]): GroupedData => {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0]; // "YYYY-MM-DD"
+    const yesterday = new Date(now.setDate(now.getDate() - 1))
+      .toISOString()
+      .split("T")[0];
+    const sevenDaysAgo = new Date(now.setDate(now.getDate() - 6))
+      .toISOString()
+      .split("T")[0];
+    const fourteenDaysAgo = new Date(now.setDate(now.getDate() - 7))
+      .toISOString()
+      .split("T")[0];
+    const twentyDaysAgo = new Date(now.setDate(now.getDate() - 7))
+      .toISOString()
+      .split("T")[0];
+
+    // Initialize the grouped data with the correct type
+    const grouped: GroupedData = {
+      today: [],
+      yesterday: [],
+      previous7Days: [],
+      previous14Days: [],
+      previous20Days: [],
+    };
+
+    data.forEach((item: any) => {
+      const createdDate = item.createdDate.split("T")[0]; // Use only date part (YYYY-MM-DD)
+      if (createdDate === today) grouped.today.push(item);
+      else if (createdDate === yesterday) grouped.yesterday.push(item);
+      else if (createdDate >= sevenDaysAgo) grouped.previous7Days.push(item);
+      else if (createdDate >= fourteenDaysAgo)
+        grouped.previous14Days.push(item);
+      else if (createdDate >= twentyDaysAgo) grouped.previous20Days.push(item);
+    });
+
+    // Sort groups by the latest `createdDate`
+    Object.keys(grouped).forEach((key) => {
+      grouped[key as keyof GroupedData] = grouped[key as keyof GroupedData]
+        .map((group: any) => {
+          // Sort by latest `createdDate`
+          group.groups.sort(
+            (a: any, b: any) =>
+              new Date(b.latestDate).getTime() -
+              new Date(a.latestDate).getTime()
+          );
+          return group;
+        })
+        .reverse();
+    });
+
+    return grouped;
+  };
+
+  const fetchSidebaritems = async () => {
+    const storedData = localStorage.getItem("userdata");
+    let userId: string | null = null;
+
+    if (storedData !== null) {
+      const parsedData = JSON.parse(storedData);
+      userId = parsedData._id;
+    }
+
+    if (userId) {
+      const response = await fetchnavbaritems(userId);
+      // Group the data by date ranges
+      const groupedData = groupByDateRange(response.data);
+      setGroupedItems(groupedData); // Update the state with grouped data
+    }
+  };
 
   useEffect(() => {
-    // Set selectedIndex based on the current pathname
+    fetchSidebaritems();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const refreshSidebarValue = localStorage.getItem("refreshSidebar");
+      if (refreshSidebarValue === "true") {
+        fetchSidebaritems(); // Refresh the sidebar items
+        localStorage.setItem("refreshSidebar", "false"); // Reset the flag
+      }
+    }, 1000); // Run every 1 second
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const groupBy = localStorage.getItem("currentGroupItems");
+      const createDate = localStorage.getItem("currentDate");
+
+      if (groupBy && createDate) {
+        const group = groupedItems?.today?.find(
+          (item: any) =>
+            item.groupBy === groupBy && item.createdDate === createDate
+        );
+
+        if (group) {
+        } else {
+        }
+      }
+    }, 1000); // Run every 1 second
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handlesetMessages = (items: string, date: string) => {
+    localStorage.setItem("currentGroupItems", items);
+    localStorage.setItem("currentDate", date);
+    localStorage.setItem("ChangeSidebarState", "true");
+  };
+
+  const handleGroupClick = (groupBy: string, createdDate: string) => {
+    setSelectedGroup({ groupBy, createdDate });
+    handlesetMessages(groupBy, createdDate); // Keep your original function call here
+  };
+
+  // Set the selected index when the pathname changes
+  useEffect(() => {
     const selectedIndex = navItems.findIndex((item) => item.href === pathname);
     setSelectedIndex(selectedIndex !== -1 ? selectedIndex : null);
   }, [pathname, navItems]);
 
+  // Add current URL to state
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const fullUrl = window.location.href;
+      setCurrentUrl(fullUrl);
+    }
+  }, []);
+
+  // Handle item click
   const handleItemClick = (index: number) => {
-    setSelectedIndex(index); // Set the clicked item as selected
+    setSelectedIndex(index);
   };
 
   return (
@@ -67,7 +219,6 @@ const Sidebar = ({
         <nav className="flex-grow">
           <ul className="my-2 flex flex-col gap-2 items-stretch">
             {navItems.map((item, index) => {
-              // Check if the current item is selected by comparing the pathname
               const isSelected =
                 pathname === item.href || selectedIndex === index;
 
@@ -78,13 +229,13 @@ const Sidebar = ({
                   className={classNames({
                     flex: true,
                     "text-black hover:bg-regal-blue hover:text-white dark:text-white":
-                      true, // colors
-                    "transition-colors duration-300": true, // animation
+                      true,
+                    "transition-colors duration-300": true,
                     "rounded-md p-2 mx-3 gap-4 ": !collapsed,
                     "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                    "bg-blue-500 text-white": isSelected, // Apply background when selected
+                    "bg-blue-500 text-white": isSelected,
                   })}
-                  onClick={() => handleItemClick(index)} // Handle click event to set the selected item
+                  onClick={() => handleItemClick(index)}
                 >
                   {item.icon}
                   <span>{!collapsed && item.label}</span>
@@ -92,9 +243,46 @@ const Sidebar = ({
               );
             })}
           </ul>
-        </nav>
 
-        <div className="grid place-content-stretch p-4"></div>
+          <hr />
+          {!collapsed && currentUrl === "http://localhost:3000/home" && (
+            <div className="scrollbar-thin overflow-y-visible">
+              {Object.keys(groupedItems).map((groupKey) => (
+                <div key={groupKey}>
+                  <h3 className="font-bold text-lg mx-5 py-3">
+                    {groupedItems[groupKey].length > 0 &&
+                      groupKey.replace(/([A-Z])/g, " $1")}
+                  </h3>
+                  {groupedItems[groupKey].map((group: any) => (
+                    <div key={group.createdDate}>
+                      {group.groups.map((item: any) => {
+                        const isSelected =
+                          selectedGroup?.groupBy === item.groupBy &&
+                          selectedGroup?.createdDate === group.createdDate;
+
+                        return (
+                          <div
+                            key={item.groupBy}
+                            onClick={() =>
+                              handleGroupClick(item.groupBy, group.createdDate)
+                            }
+                            className={`p-2 mx-3 rounded-xl my-1 ${
+                              isSelected
+                                ? "bg-slate-600 text-white"
+                                : "hover:bg-slate-600 hover:text-white"
+                            }`}
+                          >
+                            <p className="font-medium">{item.groupBy}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </nav>
       </div>
     </div>
   );

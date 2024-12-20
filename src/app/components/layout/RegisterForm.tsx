@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Link from "next/link";
 import { LockKeyhole, LockKeyholeOpen, Mail } from "lucide-react";
 import axios from "axios";
@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; // Firebase methods
 import toast from "react-hot-toast";
 import { auth } from "./../firebase/firebase";
+import VerificationModal from "../modal/verificationmodal";
 
 const RegisterForm = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State to toggle password visibility
@@ -21,6 +22,7 @@ const RegisterForm = () => {
   const [errorMessage, setErrorMessage] = useState(""); // State to track error message
   const [successMessage, setSuccessMessage] = useState(""); // State for success message
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const router = useRouter(); // For navigation after successful signup
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev); // Toggle password visibility
@@ -42,6 +44,10 @@ const RegisterForm = () => {
     const value = e.target.value;
     setPassword(value);
     setIsPasswordValid(value.length >= 8); // Password must be at least 8 characters
+  };
+
+  const handleVerificationModalClose = () => {
+    setIsVerificationModalOpen(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,6 +90,7 @@ const RegisterForm = () => {
           update_date: "",
           status: "active",
           isDelete: "0",
+          verifystate: "false",
         }
       );
 
@@ -91,7 +98,8 @@ const RegisterForm = () => {
         // setSuccessMessage("Registration successful!");
         toast.success(`Welcome, ${username}! Please login.`);
         // You can navigate the user to the login page, or keep the success message
-        router.push("/home"); // Optional: Navigate to home page
+        // setIsVerificationModalOpen(true);
+        // router.push("/home"); // Optional: Navigate to home page
       } else {
         setErrorMessage("Something went wrong. Please try again.");
       }
@@ -353,6 +361,12 @@ const RegisterForm = () => {
       )}
       {successMessage && (
         <p className="text-green-500 text-sm mt-2">{successMessage}</p>
+      )}
+      {isVerificationModalOpen && (
+        <VerificationModal
+          email={email}
+          onClose={handleVerificationModalClose}
+        />
       )}
     </div>
   );

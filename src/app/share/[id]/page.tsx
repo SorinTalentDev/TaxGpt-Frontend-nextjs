@@ -114,9 +114,11 @@ export default function SharePage({
   useEffect(() => {
     fetchMessageHistory();
   }, [workspaceName, sharedUser]); // Fetch when workspaceName or sharedUser changes
-
+  const clearMessages = () => {
+    console.log("ok!");
+  };
   return (
-    <Layout>
+    <Layout clearMessages={clearMessages}>
       <div className="w-full dark:bg-[#0a0a0a]">
         <p className="text-center text-3xl text-black dark:text-white font-bold py-5 font-Ambit">
           {workspaceName}

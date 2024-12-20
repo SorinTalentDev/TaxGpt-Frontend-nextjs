@@ -82,9 +82,11 @@ export default function Page() {
     setWorkspaces([...workspaces, { id, name, created_date }]);
     toast.success("Created workspace successfully!");
   };
-
+  const clearMessages = () => {
+    // setMessages([]); // Clears the messages state
+  };
   return (
-    <Layout>
+    <Layout clearMessages={clearMessages}>
       <div className="w-full py-7 max max-md:w-screen pl-20 dark:bg-[#232324] h-[calc(100vh-73px)] max-md:pl-0">
         {/* Title */}
         <div>

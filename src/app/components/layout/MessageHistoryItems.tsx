@@ -18,6 +18,7 @@ import RemoveFromSpaceModal from "../modal/removefromspacemodal";
 import RenderMessage from "./RenderMessage";
 import DeleteThreadModal from "../modal/deletethreadmodal";
 import moment from "moment";
+import classNames from "classnames";
 
 interface MessageHistoryItemProps {
   id: string;
@@ -136,21 +137,33 @@ const MessageHistoryItem = ({
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-44 w-48 dark:bg-[#191a1a] bg-gray-300 rounded-lg shadow-lg border-t-2 dark:border-[#2b2c2d] z-50">
-              <button
-                onClick={() => setIsSwapModalOpen(true)}
-                className="flex items-center w-full text-left px-4 py-2 rounded-lg dark:text-white text-black dark:hover:bg-[#323333] hover:bg-gray-400"
-              >
-                <ArrowLeftRight />
-                <p className="mx-1">Swap Spaces</p>
-              </button>
-              <button
-                onClick={() => setIsRemoveModalOpen(true)}
-                className="flex items-center w-full text-left px-4 py-2 rounded-lg dark:text-white text-black dark:hover:bg-[#323333] hover:bg-gray-400"
-              >
-                <X />
-                <p className="mx-1">Remove from Space</p>
-              </button>
+            <div
+              className={classNames(
+                "absolute right-0 mt-44 w-48 dark:bg-[#191a1a] bg-gray-300 rounded-lg shadow-lg border-t-2 dark:border-[#2b2c2d] z-50",
+                {
+                  "mt-[80px]": !workspaceName,
+                }
+              )}
+            >
+              {workspaceName && (
+                <button
+                  onClick={() => setIsSwapModalOpen(true)}
+                  className="flex items-center w-full text-left px-4 py-2 rounded-lg dark:text-white text-black dark:hover:bg-[#323333] hover:bg-gray-400"
+                >
+                  <ArrowLeftRight />
+                  <p className="mx-1">Swap Spaces</p>
+                </button>
+              )}
+
+              {workspaceName && (
+                <button
+                  onClick={() => setIsRemoveModalOpen(true)}
+                  className="flex items-center w-full text-left px-4 py-2 rounded-lg dark:text-white text-black dark:hover:bg-[#323333] hover:bg-gray-400"
+                >
+                  <X />
+                  <p className="mx-1">Remove from Space</p>
+                </button>
+              )}
               <button
                 onClick={() => setIsDeleteModalOpen(true)}
                 className="flex items-center w-full text-left px-4 py-2 rounded-lg dark:text-white text-black dark:hover:bg-[#323333] hover:bg-gray-400"

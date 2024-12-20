@@ -1,26 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import { Bell, BellOff, Info, Moon } from "lucide-react";
-// import { RxAvatar } from "react-icons/rx";
+import { Bell, BellOff, Info, MessageSquareDiff, Moon } from "lucide-react";
 import { destroyCookie } from "nookies";
 import UserProfileModal from "../modal/userprofilemodal";
 
 type Props = {
   onMenuButtonClick(): void;
+  clearMessages: () => void; // Accept clearMessages function as a prop
 };
 
 function toggleDarkMode() {
   document.documentElement.classList.toggle("dark");
 }
 
-const Navbar = (props: Props) => {
+const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isBellActive, setIsBellActive] = useState(true);
   const [newsCount, setNewsCount] = useState(3);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [profileUrl, SetProfileUrl] = useState();
+  const [profileUrl, SetProfileUrl] = useState<string | undefined>(undefined);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [currentUrl, setCurrentUrl] = useState<string>("");
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -43,6 +44,13 @@ const Navbar = (props: Props) => {
     SetProfileUrl(parsedUserData.profile_img);
   }, []);
 
+  useEffect(() => {
+    // Check if running in the browser environment
+    if (typeof window !== "undefined") {
+      const fullUrl = window.location.href;
+      setCurrentUrl(fullUrl);
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
@@ -60,6 +68,10 @@ const Navbar = (props: Props) => {
     setIsProfileModalOpen(false);
   };
 
+  const newChathandler = () => {
+    clearMessages(); // Call the function to clear messages
+  };
+
   const gotologout = () => {
     destroyCookie(null, "authToken", { path: "/" });
     setTimeout(() => {
@@ -75,7 +87,20 @@ const Navbar = (props: Props) => {
         "w-screen md:w-full sticky z-10 px-4 shadow-sm h-[73px] top-0 ": true,
       })}
     >
-      <div className="flex-grow"></div>
+      <div className="flex-grow relative group">
+        {currentUrl === "http://localhost:3000/home" && (
+          <button
+            onClick={newChathandler}
+            className="relative ml-5 items-center flex"
+          >
+            <MessageSquareDiff />
+            {/* Tooltip */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs font-semibold py-1 px-2 rounded-md whitespace-nowrap z-50">
+              <p className="text-sm">New chat</p>
+            </div>
+          </button>
+        )}
+      </div>
       <div className="flex items-center">
         <form className="max-w-md mx-3">
           <div className="relative">
@@ -128,7 +153,6 @@ const Navbar = (props: Props) => {
           <Moon />
         </button>
         <button onClick={toggleDropdown}>
-          {/* <RxAvatar className="text-5xl mx-3" /> */}
           <img
             src={profileUrl}
             alt="Avatar"
@@ -156,7 +180,7 @@ const Navbar = (props: Props) => {
           </div>
         )}
       </div>
-      <button className="md:hidden" onClick={props.onMenuButtonClick}>
+      <button className="md:hidden" onClick={onMenuButtonClick}>
         <Bars3Icon className="h-6 w-6" />
       </button>
 
