@@ -263,7 +263,7 @@ const Sidebar = ({
           </ul>
 
           <hr className="mb-3" />
-          {!collapsed && currentUrl === "https://app.myaiwiz.com/home" && (
+          {!collapsed && currentUrl === "http://localhost:3000/home" && (
             <div className="scrollbar-track-black overflow-y-auto h-[calc(100vh-280px)]">
               {Object.keys(groupedItems).map((groupKey) => {
                 // Filter valid groups (exclude "unknown group")
@@ -280,52 +280,55 @@ const Sidebar = ({
                 if (validGroups.length === 0) return null;
 
                 return (
-                <div key={groupKey}>
-                  <h3 className="font-bold text-lg mx-5">
-                    {
-                      groupedItems[groupKey].length > 0 &&
+                  <div key={groupKey}>
+                    <h3 className="font-bold text-lg mx-5">
+                      {
                         groupKey
                           .replace(/([a-z])([A-Z])/g, "$1 $2") // Add space before uppercase letters
                           .replace(/\b\w/g, (char) => char.toUpperCase()) // Capitalize first letter of each word
-                    }
-                  </h3>
-                  {groupedItems[groupKey].map((group: any) => (
-                    <div key={group.createdDate}>
-                      {group.groups.map((item: any, index: number) => {
-                        // Determine if this item should be selected based on `selectedGroup`
-                        const isSelected =
-                          (index === 0 && !selectedGroup) || // Select the first item by default
-                          (selectedGroup?.groupBy === item.groupBy &&
-                            selectedGroup?.createdDate === group.createdDate);
+                      }
+                    </h3>
+                    {validGroups.map((group: any) => (
+                      <div key={group.createdDate}>
+                        {group.groups.map((item: any, index: number) => {
+                          // Determine if this item should be selected based on `selectedGroup`
+                          const isSelected =
+                            (index === 0 && !selectedGroup) || // Select the first item by default
+                            (selectedGroup?.groupBy === item.groupBy &&
+                              selectedGroup?.createdDate === group.createdDate);
 
-                        return (
-                          <div
-                            key={item.groupBy}
-                            onClick={() => {
-                              // Update `selectedGroup` on click
-                              handleGroupClick(item.groupBy, group.createdDate);
-                              localStorage.setItem(
-                                "selectedGroup",
-                                JSON.stringify({
-                                  groupBy: item.groupBy,
-                                  createdDate: group.createdDate,
-                                })
-                              );
-                            }}
-                            className={`p-2 mx-3 rounded-xl my-1 ${
-                              isSelected
-                                ? "bg-slate-600 text-white"
-                                : "hover:bg-slate-600 hover:text-white"
-                            }`}
-                          >
-                            <p className="font-medium">{item.groupBy}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              ))}
+                          return (
+                            <div
+                              key={item.groupBy}
+                              onClick={() => {
+                                // Update `selectedGroup` on click
+                                handleGroupClick(
+                                  item.groupBy,
+                                  group.createdDate
+                                );
+                                localStorage.setItem(
+                                  "selectedGroup",
+                                  JSON.stringify({
+                                    groupBy: item.groupBy,
+                                    createdDate: group.createdDate,
+                                  })
+                                );
+                              }}
+                              className={`p-2 mx-3 rounded-xl my-1 ${
+                                isSelected
+                                  ? "bg-slate-600 text-white"
+                                  : "hover:bg-slate-600 hover:text-white"
+                              }`}
+                            >
+                              <p className="font-medium">{item.groupBy}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
             </div>
           )}
         </nav>
