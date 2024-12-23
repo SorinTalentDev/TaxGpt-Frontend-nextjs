@@ -361,7 +361,7 @@ export default function EditWorkspace({
               {/* message container */}
               <div
                 ref={messagesContainerRef}
-                className="flex-grow overflow-y-auto w-[80%] max-md:w-[100%] m-auto scrollbar-none"
+                className="flex-grow overflow-y-auto w-full px-[10%] max-md:w-[100%] m-auto scrollbar-track-inherit"
               >
                 <div className="flex-col gap-4 flex">
                   {messages.map((message, index) => (
