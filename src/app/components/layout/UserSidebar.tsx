@@ -263,7 +263,7 @@ const Sidebar = ({
           </ul>
 
           <hr className="mb-3" />
-          {!collapsed && currentUrl === "http://localhost:3000/home" && (
+          {!collapsed && currentUrl === "https://app.myaiwiz.com/home" && (
             <div className="scrollbar-track-black overflow-y-auto h-[calc(100vh-280px)]">
               {Object.keys(groupedItems).map((groupKey) => {
                 // Filter valid groups (exclude "unknown group")
