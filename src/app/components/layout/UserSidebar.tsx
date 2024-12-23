@@ -265,7 +265,21 @@ const Sidebar = ({
           <hr className="mb-3" />
           {!collapsed && currentUrl === "https://app.myaiwiz.com/home" && (
             <div className="scrollbar-track-black overflow-y-auto h-[calc(100vh-280px)]">
-              {Object.keys(groupedItems).map((groupKey) => (
+              {Object.keys(groupedItems).map((groupKey) => {
+                // Filter valid groups (exclude "unknown group")
+                const validGroups = groupedItems[groupKey]
+                  .map((group: any) => ({
+                    ...group,
+                    groups: group.groups.filter(
+                      (item: any) => item.groupBy !== "Unknown Group"
+                    ),
+                  }))
+                  .filter((group: any) => group.groups.length > 0);
+
+                // Skip rendering this group if there are no valid items
+                if (validGroups.length === 0) return null;
+
+                return (
                 <div key={groupKey}>
                   <h3 className="font-bold text-lg mx-5">
                     {

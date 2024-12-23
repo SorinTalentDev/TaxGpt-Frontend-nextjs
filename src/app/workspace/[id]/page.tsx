@@ -196,9 +196,7 @@ export default function EditWorkspace({
     const parsedUserData = JSON.parse(localStorage.getItem("userdata")!);
     SetProfileUrl(parsedUserData.profile_img);
   }, []);
-  useEffect(() => {
-    console.log(messagesContainerRef.current);
-  }, []);
+
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (container) {
