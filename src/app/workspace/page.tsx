@@ -80,7 +80,7 @@ export default function Page() {
     created_date: string
   ) => {
     setWorkspaces([...workspaces, { id, name, created_date }]);
-    toast.success("Created workspace successfully!");
+    // toast.success("Created workspace successfully!");
   };
   const clearMessages = () => {
     // setMessages([]); // Clears the messages state

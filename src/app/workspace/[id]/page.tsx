@@ -156,6 +156,17 @@ export default function EditWorkspace({
           });
 
         setMessageHistory(formattedMessages);
+
+        // Group inversion
+        const invertedGroups = formattedMessages
+          .slice() // Create a shallow copy to avoid mutating the original array
+          .reverse() // Reverse the group order
+          .flatMap((history) => [
+            { role: "user", content: history.userMessage },
+            { role: "assistant", content: history.assistantMessage },
+          ]);
+
+        setMessages(invertedGroups);
         setLoading(false);
       } else {
         console.log("Failed to fetch messages:", response.data.message);
@@ -189,7 +200,6 @@ export default function EditWorkspace({
     console.log(messagesContainerRef.current);
   }, []);
   useEffect(() => {
-    // alert("ok!");
     const container = messagesContainerRef.current;
     if (container) {
       container.addEventListener("scroll", handleScroll);
@@ -208,9 +218,9 @@ export default function EditWorkspace({
   const clearMessages = () => {
     setMessages([]); // Clears the messages state
   };
-  useEffect(() => {
-    scrollToBottom(); // Automatically scroll to bottom on new messages
-  }, [messages]);
+  // useEffect(() => {
+  //   scrollToBottom(); // Automatically scroll to bottom on new messages
+  // }, [messages]);
   useEffect(() => {
     if (workspaceName) {
       fetchMessageHistory();
