@@ -441,7 +441,13 @@ const Sidebar = ({
                     {!workspaceitems[index] && workspaceMessages && (
                       <div>
                         {workspaceMessages.messages.map((message, msgIndex) => (
-                          <div
+                          <Link
+                            href={{
+                              pathname: `/workspace/${workspace.id}`,
+                              query: {
+                                name: workspace.name,
+                              },
+                            }}
                             key={msgIndex}
                             className={classNames({
                               flex: true,
@@ -454,7 +460,7 @@ const Sidebar = ({
                             {message.message.length > 20
                               ? `${message.message.slice(0, 25)}...`
                               : message.message}
-                          </div>
+                          </Link>
                         ))}
                       </div>
                     )}
