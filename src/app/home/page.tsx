@@ -47,7 +47,7 @@ export default function Page() {
     setMessages([]); // Clears the messages state
   };
   useEffect(() => {
-    fetchMessages();
+    // fetchMessages();
   }, []);
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export default function Page() {
         {/* Messages Container */}
         <div
           ref={messagesContainerRef}
-          className="flex-grow overflow-y-auto w-full max-md:w-[100%] m-auto scrollbar-track-current px-[25%] max-md:px-3"
+          className="flex-grow overflow-y-auto w-full max-md:w-[100%] m-auto scrollbar-track-current px-[25%] max-lg:px-3"
         >
           <div className="flex-col gap-4 flex">
             {messages.map((message, index) => (
@@ -213,14 +213,14 @@ export default function Page() {
 
         {/* Input Box */}
         <div className="mt-4 mb-4 m-auto w-full">
-          <div className="flex items-center w-[40%] m-auto gap-0.5 max-md:w-[100%]">
+          <div className="flex items-center w-[40%] m-auto gap-0.5 max-md:w-[100%] max-lg:w-[80%]">
             <input
               type="text"
               value={input}
               disabled={loading}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Enter a Prompt here"
+              placeholder="Message MyAIWiz"
               className="flex-grow p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-[#232324] dark:text-white"
             />
             <button

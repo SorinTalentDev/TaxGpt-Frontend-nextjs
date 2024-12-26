@@ -28,49 +28,44 @@ export default function Page() {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const fetchWorkspaces = async () => {
+    try {
+      const userdata = localStorage.getItem("userdata");
+      if (!userdata) {
+        toast.error("User not found. Please log in again.");
+        return;
+      }
+
+      const { _id } = JSON.parse(userdata);
+      const userId = _id;
+      // Call the backend API
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/workspace/getAll`,
+        { userId }
+      );
+
+      if (response.status === 200 && response.data.success === 1) {
+        // Transform and update state
+        const workspacesData = response.data.data.map(
+          (workspace: responseData) => ({
+            id: workspace._id,
+            name: workspace.workspaceName,
+            created_date: workspace.created_date,
+          })
+        );
+        localStorage.setItem("workspace", JSON.stringify(workspacesData));
+        setWorkspaces(workspacesData);
+        console.log("workspaces:", workspaces);
+      } else {
+        // toast.error("Can't find workspaces.");
+      }
+    } catch (error) {
+      console.log("Error fetching workspaces:", error);
+      toast.error("please check your internet connection.");
+    }
+  };
   // Fetch workspaces on component mount
   useEffect(() => {
-    const fetchWorkspaces = async () => {
-      try {
-        const userdata = localStorage.getItem("userdata");
-        if (!userdata) {
-          toast.error("User not found. Please log in again.");
-          return;
-        }
-
-        const { _id } = JSON.parse(userdata);
-        const userId = _id;
-        // Call the backend API
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/workspace/getAll`,
-          { userId }
-        );
-
-        if (response.status === 200 && response.data.success === 1) {
-          console.log(userId);
-          console.log("Response Data:", response.data); // Log the entire response
-          console.log("Response Data Object:", response.data.data); // Log the object you care about
-          // Transform and update state
-          const workspacesData = response.data.data.map(
-            (workspace: responseData) => ({
-              id: workspace._id,
-              name: workspace.workspaceName,
-              created_date: workspace.created_date,
-            })
-          );
-          localStorage.setItem("workspace", JSON.stringify(workspacesData));
-          // console.log(workspacesData);
-          setWorkspaces(workspacesData);
-          console.log("workspaces:", workspaces);
-        } else {
-          // toast.error("Can't find workspaces.");
-        }
-      } catch (error) {
-        console.log("Error fetching workspaces:", error);
-        toast.error("please check your internet connection.");
-      }
-    };
-
     fetchWorkspaces();
   }, []); // Empty dependency array ensures this runs once on mount
 
@@ -80,14 +75,14 @@ export default function Page() {
     created_date: string
   ) => {
     setWorkspaces([...workspaces, { id, name, created_date }]);
-    // toast.success("Created workspace successfully!");
+    console.log("ok! workspace: ", workspaces);
   };
   const clearMessages = () => {
     // setMessages([]); // Clears the messages state
   };
   return (
     <Layout clearMessages={clearMessages}>
-      <div className="w-full py-7 max max-md:w-screen pl-20 dark:bg-[#232324] h-[calc(100vh-73px)] max-md:pl-0">
+      <div className="w-full py-7 max max-md:w-screen pl-20 dark:bg-[#232324] h-[calc(100vh-73px)] max-md:pl-0 max-lg:pl-5">
         {/* Title */}
         <div>
           <p className="text-center font-Ambit text-6xl max-md:text-4xl font-extrabold bg-clip-text text-transparent bg-[linear-gradient(to_right,theme(colors.indigo.400),theme(colors.indigo.100),theme(colors.sky.400),theme(colors.fuchsia.400),theme(colors.sky.400),theme(colors.indigo.100),theme(colors.indigo.400))] bg-[length:200%_auto] animate-gradient">
@@ -96,7 +91,7 @@ export default function Page() {
         </div>
 
         {/* Grid Container */}
-        <div className="grid grid-cols-4 gap-4 mt-6 max-md:grid-cols-1 max-md:gap-2 max-md:mx-auto max-md:justify-items-center">
+        <div className="grid grid-cols-4 gap-4 mt-6 max-md:grid-cols-1 max-lg:grid-cols-2 max-[820px]:grid-cols-1 max-[1024px]:grid-cols-2 max-[1024px]:mx-auto max-[1024px]:justify-items-center max-lg:pl-0 max-md:gap-2 max-md:mx-auto max-md:justify-items-center">
           {/* Create Space Button */}
           <div>
             <button

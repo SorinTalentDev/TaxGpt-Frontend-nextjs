@@ -75,15 +75,15 @@ const MessageHistoryItem = ({
       const parsedUrl = new URL(fullUrl);
 
       // Log the full URL to see what's happening
-      console.log("Full URL:", fullUrl);
-      console.log("Parsed URL:", parsedUrl);
+      // console.log("Full URL:", fullUrl);
+      // console.log("Parsed URL:", parsedUrl);
       // Split the pathname and take the desired part
       const extractedBaseUrl = `${parsedUrl.origin}${parsedUrl.pathname
         .split("/")
         .slice(0, 2)
         .join("/")}`;
       setCurrentUrl(extractedBaseUrl);
-      console.log("currentUrl: ", extractedBaseUrl);
+      // console.log("currentUrl: ", extractedBaseUrl);
     }
   }, []);
   return (

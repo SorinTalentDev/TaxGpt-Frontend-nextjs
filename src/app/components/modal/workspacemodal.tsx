@@ -45,9 +45,23 @@ const WorkspaceModal: React.FC<WorkspaceModalProps> = ({
       );
 
       if (response.status === 200 || response.status === 201) {
-        onSubmit(_id, workspaceName, new Date().toISOString());
+        const date = new Date().toISOString();
+        onSubmit(response.data.data.insertedId, workspaceName, date);
+        console.log("workspace response: ", response);
         toast.success("Workspace created successfully!");
         setWorkspaceName(""); // Reset input field
+        const newWorkspace = {
+          id: response.data.data.insertedId, // Generate or fetch a unique ID for the new workspace
+          name: workspaceName, // Set the name of the new workspace
+          created_date: date, // Set the creation date
+        };
+        const currentWorkspaceList = JSON.parse(
+          localStorage.getItem("workspace") || "[]"
+        );
+        console.log("new workspace: ", newWorkspace);
+        currentWorkspaceList.push(newWorkspace);
+        localStorage.setItem("workspace", JSON.stringify(currentWorkspaceList));
+
         onClose(); // Close modal
       } else {
         throw new Error("Failed to create workspace");

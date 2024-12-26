@@ -121,7 +121,6 @@ export default function EditWorkspace({
       );
 
       if (response.data.success === 1 && response.data.data) {
-        console.log(response);
         const formattedMessages = response.data.data
           .filter(
             (messageData) =>
@@ -187,9 +186,9 @@ export default function EditWorkspace({
       if (workspaceNameFromQuery) {
         setWorkspaceName(workspaceNameFromQuery); // Set workspace name
       }
-      console.log("params.name:", workspaceNameFromQuery);
+      // console.log("params.name:", workspaceNameFromQuery);
       // setWorkspaceName(params.name); // Set the initial workspace name
-      console.log(params);
+      // console.log(params);
     });
   }, [asyncParams]);
   useEffect(() => {
@@ -356,7 +355,7 @@ export default function EditWorkspace({
           </div>
         </div>
         <div className="flex text-black">
-          <div className="w-[70%] max-md:w-full">
+          <div className="w-[70%] max-md:w-full max-lg:w-full max-[1024px]:w-full">
             <div className="flex flex-col h-[calc(100vh-148px)] max-md:w-screen m-auto relative py-4">
               {/* message container */}
               <div
@@ -533,7 +532,7 @@ export default function EditWorkspace({
 
             {/* Threads */}
           </div>
-          <div className="w-[30%] max-md:hidden px-2 border-s-gray-300 border">
+          <div className="w-[30%] max-md:hidden px-2 border-s-gray-300 border max-lg:hidden max-[1024px]:hidden">
             <div className="my-6">
               <div className="flex justify-start items-center text-center dark:text-white text-black">
                 <History />

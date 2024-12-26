@@ -40,10 +40,6 @@ const DeleteWorkspaceModal: React.FC<DeleteWorkspaceModalProps> = ({
           workspaceName,
         }
       );
-
-      console.log(userId);
-      console.log(workspaceId);
-      console.log(workspaceName);
       // Check if the deletion was successful
       if (response.data.success === 1) {
         toast.success("Workspace deleted successfully!");
