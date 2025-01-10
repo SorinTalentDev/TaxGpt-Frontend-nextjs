@@ -55,7 +55,6 @@ export default function Page() {
         );
         localStorage.setItem("workspace", JSON.stringify(workspacesData));
         setWorkspaces(workspacesData);
-        console.log("workspaces:", workspaces);
       } else {
         // toast.error("Can't find workspaces.");
       }

@@ -1,5 +1,5 @@
 import { Check, Copy } from "lucide-react";
-import React, { useState } from "react";
+import React, { Children, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -24,7 +24,8 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
         extractedLinks.set(url, fileName); // Map the URL to its unique counter
       }
       return ""; // Replace in the main content with an empty string
-    });
+    })
+    .replace(/:/g, ""); // Remove all colons;
 
   const uniqueLinks = Array.from(extractedLinks.entries()); // Convert the map to an array
 
@@ -106,7 +107,7 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
               {children}
             </a>
           ),
-          p: ({ children }) => <p className="my-2 leading-10">{children}</p>,
+          p: ({ children }) => <p className=" leading-10">{children}</p>,
           table: ({ children, ...props }) => (
             <table
               className="w-full border-separate border-spacing-0 border-gray-400 text-center rounded-lg mb-6 table-auto"
@@ -143,13 +144,19 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
           ),
           ol: ({ children, ...props }) => (
             <ol className="list-decimal pl-5 leading-10" {...props}>
-              {children}
+              <span>{children}</span>
             </ol>
           ),
           li: ({ children, ...props }) => (
-            <li className="mb-1 leading-10" {...props}>
-              {children}
+            <li className="my-2 leading-10" {...props}>
+              <span className="text-base">{children}</span>
             </li>
+          ),
+          strong: ({ children, ...props }) => (
+            <strong className="text-lg" {...props}>
+              {children}:
+              <br />
+            </strong>
           ),
         }}
       >

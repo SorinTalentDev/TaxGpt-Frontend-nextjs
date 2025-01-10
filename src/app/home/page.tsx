@@ -11,11 +11,24 @@ import Image from "next/image";
 import Typewriter from "../components/layout/Typewriter";
 import logo from "./../Assets/image/logo.png";
 import { fetchMessageHistory } from "../utils/fetchmessage";
+import toast from "react-hot-toast";
+interface Workspace {
+  id: string;
+  name: string;
+  created_date: string;
+}
+
+interface responseData {
+  _id: string; // Adjust based on your MongoDB ObjectId handling (it could be ObjectId or string)
+  workspaceName: string;
+  created_date: string; // or Date if it's a Date object
+}
 
 export default function Page() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
   );
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -46,8 +59,46 @@ export default function Page() {
   const clearMessages = () => {
     setMessages([]); // Clears the messages state
   };
+
+  const fetchWorkspaces = async () => {
+    try {
+      const userdata = localStorage.getItem("userdata");
+      if (!userdata) {
+        toast.error("User not found. Please log in again.");
+        return;
+      }
+
+      const { _id } = JSON.parse(userdata);
+      const userId = _id;
+      // Call the backend API
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/workspace/getAll`,
+        { userId }
+      );
+
+      if (response.status === 200 && response.data.success === 1) {
+        // Transform and update state
+        const workspacesData = response.data.data.map(
+          (workspace: responseData) => ({
+            id: workspace._id,
+            name: workspace.workspaceName,
+            created_date: workspace.created_date,
+          })
+        );
+        localStorage.setItem("workspace", JSON.stringify(workspacesData));
+        setWorkspaces(workspacesData);
+      } else {
+        // toast.error("Can't find workspaces.");
+      }
+    } catch (error) {
+      console.log("Error fetching workspaces:", error);
+      toast.error("please check your internet connection.");
+    }
+  };
+
   useEffect(() => {
     // fetchMessages();
+    fetchWorkspaces();
   }, []);
 
   useEffect(() => {

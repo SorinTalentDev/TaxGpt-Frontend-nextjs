@@ -69,11 +69,13 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
   };
 
   const newChathandler = () => {
+    localStorage.setItem("currentGroupItems", "New Chat");
     clearMessages(); // Call the function to clear messages
   };
 
   const gotologout = () => {
     destroyCookie(null, "authToken", { path: "/" });
+    localStorage.setItem("currentGroupItems", "New Chat");
     setTimeout(() => {
       window.location.href = "/login?logout=true";
     }, 100);
@@ -83,7 +85,7 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
     <nav
       className={classNames({
         "bg-white dark:bg-[#111111] text-zinc-500": true,
-        "flex items-center": true,
+        "flex items-center justify-around": true,
         "w-screen md:w-full sticky z-10 px-4 shadow-sm h-[73px] top-0 ": true,
       })}
     >
@@ -101,6 +103,12 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
           </button>
         )}
       </div>
+      {currentUrl === "https://app.myaiwiz.com/home" && (
+        <div className="flex-grow items-center text-black max-md:hidden dark:text-white">
+          {localStorage.getItem("currentGroupItems")}
+        </div>
+      )}
+
       <div className="flex items-center">
         <form className="max-w-md mx-3">
           <div className="relative">

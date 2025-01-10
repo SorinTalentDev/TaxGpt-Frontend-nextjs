@@ -28,7 +28,8 @@ const config: Config = {
         "custom-sidebar-blur": "24px",
       },
       fontFamily: {
-        Ambit: ["Ambit", "sans-serif"],
+        // Ambit: ["Ambit", "sans-serif"],
+        Ambit: ["Arial", "Arial"],
         Jakarta: ["Jakarta", "sans-serif"],
       },
       width: {

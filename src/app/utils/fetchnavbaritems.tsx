@@ -23,10 +23,10 @@ interface ResponseData {
 export const fetchnavbaritems = async (
   userId: string
 ): Promise<{
-  data: {
-    createdDate: string;
-    groups: { groupBy: string; latestDate: string }[]; // Array of groups
-  }[];
+  today: { groupBy: string; latestDate: string }[]; // Today's groups
+  yesterday: { groupBy: string; latestDate: string }[]; // Yesterday's groups
+  last7Days: { groupBy: string; latestDate: string }[]; // Previous 7 days groups
+  last30Days: { groupBy: string; latestDate: string }[]; // Previous 30 days groups
 }> => {
   try {
     const response = await axios.post<ResponseData>(
@@ -35,61 +35,88 @@ export const fetchnavbaritems = async (
     );
 
     if (response.data.success === 1 && response.data.data) {
-      const transformedData: {
-        createdDate: string;
-        groups: { groupBy: string; latestDate: string }[]; // Array of groups
-      }[] = [];
+      // Categorized data arrays
+      const today: { groupBy: string; latestDate: string }[] = [];
+      const yesterday: { groupBy: string; latestDate: string }[] = [];
+      const last7Days: { groupBy: string; latestDate: string }[] = [];
+      const last30Days: { groupBy: string; latestDate: string }[] = [];
 
-      // Grouping the data by date and group
+      const now = new Date();
+
+      // Helper function to get the difference in days between two dates
+      const getDiffInDays = (date1: string, date2: string) => {
+        const diffTime = Math.abs(
+          new Date(date1).getTime() - new Date(date2).getTime()
+        );
+        return Math.floor(diffTime / (1000 * 3600 * 24)); // Returns difference in days
+      };
+
+      // Categorize and group the data
       response.data.data.forEach((messageData) => {
-        const messageDate = new Date(messageData.createddate)
-          .toISOString()
-          .split("T")[0]; // Extract date only (yyyy-mm-dd)
-        const groupByValue = messageData.groupBy || "Unknown Group";
-        const createdDate = messageData.createddate; // The full createddate
-
-        // Check if the date already exists in transformedData
-        let existingDateEntry = transformedData.find(
-          (item) => item.createdDate === messageDate
+        const createdDate = new Date(messageData.createddate);
+        const diffInDays = getDiffInDays(
+          now.toISOString(),
+          messageData.createddate
         );
 
-        if (!existingDateEntry) {
-          // If date doesn't exist, create a new entry
-          existingDateEntry = {
-            createdDate: messageDate,
-            groups: [],
-          };
-          transformedData.push(existingDateEntry);
+        const groupByValue = messageData.groupBy || "Unknown Group";
+
+        // Skip processing if the groupBy is "Unknown Group"
+        if (groupByValue === "Unknown Group") {
+          return;
         }
 
-        // Check if the group already exists for the given date
-        const existingGroup = existingDateEntry.groups.find(
-          (group) => group.groupBy === groupByValue
-        );
+        // Depending on the date, add to the correct category
+        const group = {
+          groupBy: groupByValue,
+          latestDate: messageData.createddate,
+        };
 
-        if (!existingGroup) {
-          // If group doesn't exist, add it
-          existingDateEntry.groups.push({
-            groupBy: groupByValue,
-            latestDate: createdDate,
-          });
-        } else {
-          // Compare and keep the latest createdDate for the group
-          const currentLatestDate = new Date(existingGroup.latestDate);
-          const newCreatedDate = new Date(createdDate);
-
-          if (newCreatedDate > currentLatestDate) {
-            existingGroup.latestDate = createdDate;
+        if (diffInDays === 0) {
+          if (
+            today.find(
+              (existingGroup) => existingGroup.groupBy === group.groupBy
+            )
+          ) {
+            return; // Skip adding if the group already exists
           }
+          today.push(group);
+        } else if (diffInDays === 1) {
+          yesterday.push(group);
+        } else if (diffInDays <= 7) {
+          last7Days.push(group);
+        } else if (diffInDays <= 30) {
+          last30Days.push(group);
         }
       });
 
-      return { data: transformedData }; // Return the new structure
+      // Sort each category by latestDate in descending order
+      const sortByLatestDate = (
+        a: { latestDate: string },
+        b: { latestDate: string }
+      ) => new Date(b.latestDate).getTime() - new Date(a.latestDate).getTime();
+
+      return {
+        today: today.sort(sortByLatestDate),
+        yesterday: yesterday.sort(sortByLatestDate),
+        last7Days: last7Days.sort(sortByLatestDate),
+        last30Days: last30Days.sort(sortByLatestDate),
+      };
     }
 
-    return { data: [] }; // Return an empty data array in case of failure
+    return {
+      today: [],
+      yesterday: [],
+      last7Days: [],
+      last30Days: [],
+    };
   } catch (error) {
     console.error("Error fetching message history:", error);
-    return { data: [] }; // Return an empty data array in case of an error
+    return {
+      today: [],
+      yesterday: [],
+      last7Days: [],
+      last30Days: [],
+    };
   }
 };
