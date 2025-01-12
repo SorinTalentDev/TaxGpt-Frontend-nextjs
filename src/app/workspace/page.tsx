@@ -80,7 +80,8 @@ export default function Page() {
     // setMessages([]); // Clears the messages state
   };
   return (
-    <Layout clearMessages={clearMessages}>
+    <div>
+      {/* <Layout clearMessages={clearMessages}> */}
       <div className="w-full py-7 max max-md:w-screen pl-20 dark:bg-[#232324] h-[calc(100vh-73px)] max-md:pl-0 max-lg:pl-5">
         {/* Title */}
         <div>
@@ -138,13 +139,12 @@ export default function Page() {
             ))}
         </div>
       </div>
-
-      {/* Modal */}
       <WorkspaceModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateWorkspace}
       />
-    </Layout>
+    </div>
+    // </Layout>
   );
 }

@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { Bell, BellOff, Info, MessageSquareDiff, Moon } from "lucide-react";
 import { destroyCookie } from "nookies";
 import UserProfileModal from "../modal/userprofilemodal";
+import { usePathname } from "next/navigation";
 
 type Props = {
   onMenuButtonClick(): void;
@@ -20,9 +21,9 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
   const [newsCount, setNewsCount] = useState(3);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileUrl, SetProfileUrl] = useState<string | undefined>(undefined);
+  const [msgGroup, setMsgGroup] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [currentUrl, setCurrentUrl] = useState<string>("");
-
+  const pathname = usePathname();
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
@@ -44,13 +45,6 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
     SetProfileUrl(parsedUserData.profile_img);
   }, []);
 
-  useEffect(() => {
-    // Check if running in the browser environment
-    if (typeof window !== "undefined") {
-      const fullUrl = window.location.href;
-      setCurrentUrl(fullUrl);
-    }
-  }, []); // Empty dependency array ensures this runs only once on mount
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
@@ -81,6 +75,19 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
     }, 100);
   };
 
+  useEffect(() => {
+    // Function to check and update msgGroup from localStorage
+    const updateMsgGroup = () => {
+      const SelectedMsg = localStorage.getItem("currentGroupItems");
+      if (SelectedMsg !== null) setMsgGroup(SelectedMsg);
+    };
+
+    // Execute every 1 second
+    const interval = setInterval(updateMsgGroup, 1000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
   return (
     <nav
       className={classNames({
@@ -90,7 +97,7 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
       })}
     >
       <div className="flex-grow relative group">
-        {currentUrl === "https://app.myaiwiz.com/home" && (
+        {pathname === "/home" && (
           <button
             onClick={newChathandler}
             className="relative ml-5 items-center flex"
@@ -103,9 +110,9 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
           </button>
         )}
       </div>
-      {currentUrl === "https://app.myaiwiz.com/home" && (
+      {pathname === "/home" && (
         <div className="flex-grow items-center text-black max-md:hidden dark:text-white">
-          {localStorage.getItem("currentGroupItems")}
+          {msgGroup}
         </div>
       )}
 

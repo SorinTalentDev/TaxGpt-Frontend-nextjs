@@ -130,7 +130,8 @@ export default function Page() {
   };
 
   return (
-    <Layout clearMessages={clearMessages}>
+    <div>
+      {/* <Layout clearMessages={clearMessages}> */}
       <div className="dark:bg-[#191a1a] h-[calc(100vh-73px)] max-md:w-screen">
         <div className="flex dark:text-white text-black py-6 pl-6 justify-between items-center w-[90%]">
           <p className="text-4xl font-medium max-md:text-xl">Chat History</p>
@@ -178,6 +179,7 @@ export default function Page() {
           />
         </div>
       </div>
-    </Layout>
+      {/* </Layout> */}
+    </div>
   );
 }

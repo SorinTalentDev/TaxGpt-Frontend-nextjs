@@ -291,7 +291,8 @@ export default function EditWorkspace({
   };
 
   return (
-    <Layout clearMessages={clearMessages}>
+    <div>
+      {/* <Layout clearMessages={clearMessages}> */}
       <div className="dark:bg-[#191a1a] h-[calc(100vh-73px)] max-md:w-screen">
         <div className="flex items-center justify-between text-white border-b-2 p-3 border-b-gray-300 dark:border-b-[#2b2c2d]">
           <div className="flex items-center text-5xl max-md:hidden">
@@ -563,6 +564,7 @@ export default function EditWorkspace({
         workspaceId={id}
         workspaceName={workspaceName}
       />
-    </Layout>
+    </div>
+    // </Layout>
   );
 }

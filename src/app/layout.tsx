@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SessionProvider } from "./sessionContext";
 import { Toaster } from "react-hot-toast";
+import Layout from "./components/layout/UserLayout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,7 +37,7 @@ export default function RootLayout({
         {/* Wrap children with SessionProvider */}
         <SessionProvider>
           <Toaster position="top-center" />
-          {children}
+          <Layout>{children}</Layout>
         </SessionProvider>
       </body>
     </html>

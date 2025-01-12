@@ -86,7 +86,7 @@ export const useTodayMsgItems = () => {
         if (userId) {
           const data = await fetchnavbaritems(userId); // Fetch navbar items using userId
           const todayData = data.today; // Get today's data from the fetched response
-          console.log("Todaydata : ", todayData);
+          // console.log("Todaydata : ", todayData);
           // Transform the 'today' data into the NavItem format
           const transformedTodayMsgItems: MsgItem[] = todayData.map((item) => ({
             label: `${item.groupBy}`, // You can format this label however you'd like

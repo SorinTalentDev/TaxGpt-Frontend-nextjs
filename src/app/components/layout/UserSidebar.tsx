@@ -195,167 +195,169 @@ const Sidebar = ({
             </Link>
           </ul>
           <hr />
-          <div>
-            <p className="pl-4">{TodayMsgItems.length > 0 && "Today"}</p>
-            <ul className="pl-4">
-              {TodayMsgItems.map((TodayMsgItem, index) => (
-                <Link
-                  key={index}
-                  href={TodayMsgItem.href}
-                  onClick={() => {
-                    localStorage.setItem(
-                      "currentGroupItems",
-                      TodayMsgItem.label
-                    );
-                    localStorage.setItem(
-                      "currentDate",
-                      new Date(TodayMsgItem.createDate)
-                        .toISOString()
-                        .split("T")[0]
-                    );
-                    localStorage.setItem(
-                      "selectedGroup",
-                      JSON.stringify({
-                        groupBy: TodayMsgItem.label,
-                        createdDate: new Date(TodayMsgItem.createDate)
+          {!collapsed && (
+            <div>
+              <p className="pl-4">{TodayMsgItems.length > 0 && "Today"}</p>
+              <ul className="pl-4">
+                {TodayMsgItems.map((TodayMsgItem, index) => (
+                  <Link
+                    key={index}
+                    href={TodayMsgItem.href}
+                    onClick={() => {
+                      localStorage.setItem(
+                        "currentGroupItems",
+                        TodayMsgItem.label
+                      );
+                      localStorage.setItem(
+                        "currentDate",
+                        new Date(TodayMsgItem.createDate)
                           .toISOString()
-                          .split("T")[0],
-                      })
-                    );
-                    localStorage.setItem("ChangeSidebarState", "true");
-                  }}
-                  className={classNames({
-                    flex: true,
-                    "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
-                      true,
-                    "transition-colors duration-300": true,
-                    "rounded-md p-2 mx-3 gap-4 ": !collapsed,
-                    "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                    // "bg-blue-500 text-white":
-                    //   selectedWorkspaceIndex === index,
-                  })}
-                >
-                  {TodayMsgItem.label.length > 29
-                    ? `${TodayMsgItem.label.slice(0, 29)}...`
-                    : TodayMsgItem.label}
-                </Link>
-              ))}
-            </ul>
-            <p className="pl-4">
-              {YesterdayMsgItems.length > 0 && "Yesterday"}
-            </p>
-            <ul className="pl-4">
-              {YesterdayMsgItems.map((YesterdayMsgItem, index) => (
-                <Link
-                  key={index}
-                  href={YesterdayMsgItem.href}
-                  onClick={() => {
-                    localStorage.setItem(
-                      "currentGroupItems",
-                      YesterdayMsgItem.label
-                    );
-                    localStorage.setItem(
-                      "currentDate",
-                      new Date(YesterdayMsgItem.createDate)
-                        .toISOString()
-                        .split("T")[0]
-                    );
-                    localStorage.setItem("ChangeSidebarState", "true");
-                  }}
-                  className={classNames({
-                    flex: true,
-                    "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
-                      true,
-                    "transition-colors duration-300": true,
-                    "rounded-md p-2 mx-3 gap-4 ": !collapsed,
-                    "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                    // "bg-blue-500 text-white":
-                    //   selectedWorkspaceIndex === index,
-                  })}
-                >
-                  {YesterdayMsgItem.label.length > 29
-                    ? `${YesterdayMsgItem.label.slice(0, 29)}...`
-                    : YesterdayMsgItem.label}
-                </Link>
-              ))}
-            </ul>
-            <p className="pl-4">
-              {Last7dayMsgItems.length > 0 && "Previous 7 day"}
-            </p>
-            <ul className="pl-4">
-              {Last7dayMsgItems.map((Last7dayMsgItem, index) => (
-                <Link
-                  key={index}
-                  href={Last7dayMsgItem.href}
-                  onClick={() => {
-                    localStorage.setItem(
-                      "currentGroupItems",
-                      Last7dayMsgItem.label
-                    );
-                    localStorage.setItem(
-                      "currentDate",
-                      new Date(Last7dayMsgItem.createDate)
-                        .toISOString()
-                        .split("T")[0]
-                    );
-                    localStorage.setItem("ChangeSidebarState", "true");
-                  }}
-                  className={classNames({
-                    flex: true,
-                    "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
-                      true,
-                    "transition-colors duration-300": true,
-                    "rounded-md p-2 mx-3 gap-4 ": !collapsed,
-                    "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                    // "bg-blue-500 text-white":
-                    //   selectedWorkspaceIndex === index,
-                  })}
-                >
-                  {Last7dayMsgItem.label.length > 29
-                    ? `${Last7dayMsgItem.label.slice(0, 29)}...`
-                    : Last7dayMsgItem.label}
-                </Link>
-              ))}
-            </ul>
-            <p className="pl-4">
-              {Last30dayMsgItems.length > 0 && "Previous 30 day"}
-            </p>
-            <ul className="pl-4">
-              {Last30dayMsgItems.map((Last30dayMsgItem, index) => (
-                <Link
-                  key={index}
-                  href={Last30dayMsgItem.href}
-                  onClick={() => {
-                    localStorage.setItem(
-                      "currentGroupItems",
-                      Last30dayMsgItem.label
-                    );
-                    localStorage.setItem(
-                      "currentDate",
-                      new Date(Last30dayMsgItem.createDate)
-                        .toISOString()
-                        .split("T")[0]
-                    );
-                    localStorage.setItem("ChangeSidebarState", "true");
-                  }}
-                  className={classNames({
-                    flex: true,
-                    "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
-                      true,
-                    "transition-colors duration-300": true,
-                    "rounded-md p-2 mx-3 gap-4 ": !collapsed,
-                    "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                    // "bg-blue-500 text-white":
-                    //   selectedWorkspaceIndex === index,
-                  })}
-                >
-                  {Last30dayMsgItem.label.length > 29
-                    ? `${Last30dayMsgItem.label.slice(0, 29)}...`
-                    : Last30dayMsgItem.label}
-                </Link>
-              ))}
-            </ul>
-          </div>
+                          .split("T")[0]
+                      );
+                      localStorage.setItem(
+                        "selectedGroup",
+                        JSON.stringify({
+                          groupBy: TodayMsgItem.label,
+                          createdDate: new Date(TodayMsgItem.createDate)
+                            .toISOString()
+                            .split("T")[0],
+                        })
+                      );
+                      localStorage.setItem("ChangeSidebarState", "true");
+                    }}
+                    className={classNames({
+                      flex: true,
+                      "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
+                        true,
+                      "transition-colors duration-300": true,
+                      "rounded-md p-2 mx-3 gap-4 ": !collapsed,
+                      "rounded-full p-2 mx-3 w-10 h-10": collapsed,
+                      // "bg-blue-500 text-white":
+                      //   selectedWorkspaceIndex === index,
+                    })}
+                  >
+                    {TodayMsgItem.label.length > 29
+                      ? `${TodayMsgItem.label.slice(0, 29)}...`
+                      : TodayMsgItem.label}
+                  </Link>
+                ))}
+              </ul>
+              <p className="pl-4">
+                {YesterdayMsgItems.length > 0 && "Yesterday"}
+              </p>
+              <ul className="pl-4">
+                {YesterdayMsgItems.map((YesterdayMsgItem, index) => (
+                  <Link
+                    key={index}
+                    href={YesterdayMsgItem.href}
+                    onClick={() => {
+                      localStorage.setItem(
+                        "currentGroupItems",
+                        YesterdayMsgItem.label
+                      );
+                      localStorage.setItem(
+                        "currentDate",
+                        new Date(YesterdayMsgItem.createDate)
+                          .toISOString()
+                          .split("T")[0]
+                      );
+                      localStorage.setItem("ChangeSidebarState", "true");
+                    }}
+                    className={classNames({
+                      flex: true,
+                      "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
+                        true,
+                      "transition-colors duration-300": true,
+                      "rounded-md p-2 mx-3 gap-4 ": !collapsed,
+                      "rounded-full p-2 mx-3 w-10 h-10": collapsed,
+                      // "bg-blue-500 text-white":
+                      //   selectedWorkspaceIndex === index,
+                    })}
+                  >
+                    {YesterdayMsgItem.label.length > 29
+                      ? `${YesterdayMsgItem.label.slice(0, 29)}...`
+                      : YesterdayMsgItem.label}
+                  </Link>
+                ))}
+              </ul>
+              <p className="pl-4">
+                {Last7dayMsgItems.length > 0 && "Previous 7 day"}
+              </p>
+              <ul className="pl-4">
+                {Last7dayMsgItems.map((Last7dayMsgItem, index) => (
+                  <Link
+                    key={index}
+                    href={Last7dayMsgItem.href}
+                    onClick={() => {
+                      localStorage.setItem(
+                        "currentGroupItems",
+                        Last7dayMsgItem.label
+                      );
+                      localStorage.setItem(
+                        "currentDate",
+                        new Date(Last7dayMsgItem.createDate)
+                          .toISOString()
+                          .split("T")[0]
+                      );
+                      localStorage.setItem("ChangeSidebarState", "true");
+                    }}
+                    className={classNames({
+                      flex: true,
+                      "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
+                        true,
+                      "transition-colors duration-300": true,
+                      "rounded-md p-2 mx-3 gap-4 ": !collapsed,
+                      "rounded-full p-2 mx-3 w-10 h-10": collapsed,
+                      // "bg-blue-500 text-white":
+                      //   selectedWorkspaceIndex === index,
+                    })}
+                  >
+                    {Last7dayMsgItem.label.length > 29
+                      ? `${Last7dayMsgItem.label.slice(0, 29)}...`
+                      : Last7dayMsgItem.label}
+                  </Link>
+                ))}
+              </ul>
+              <p className="pl-4">
+                {Last30dayMsgItems.length > 0 && "Previous 30 day"}
+              </p>
+              <ul className="pl-4">
+                {Last30dayMsgItems.map((Last30dayMsgItem, index) => (
+                  <Link
+                    key={index}
+                    href={Last30dayMsgItem.href}
+                    onClick={() => {
+                      localStorage.setItem(
+                        "currentGroupItems",
+                        Last30dayMsgItem.label
+                      );
+                      localStorage.setItem(
+                        "currentDate",
+                        new Date(Last30dayMsgItem.createDate)
+                          .toISOString()
+                          .split("T")[0]
+                      );
+                      localStorage.setItem("ChangeSidebarState", "true");
+                    }}
+                    className={classNames({
+                      flex: true,
+                      "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
+                        true,
+                      "transition-colors duration-300": true,
+                      "rounded-md p-2 mx-3 gap-4 ": !collapsed,
+                      "rounded-full p-2 mx-3 w-10 h-10": collapsed,
+                      // "bg-blue-500 text-white":
+                      //   selectedWorkspaceIndex === index,
+                    })}
+                  >
+                    {Last30dayMsgItem.label.length > 29
+                      ? `${Last30dayMsgItem.label.slice(0, 29)}...`
+                      : Last30dayMsgItem.label}
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          )}
         </nav>
       </div>
     </div>
