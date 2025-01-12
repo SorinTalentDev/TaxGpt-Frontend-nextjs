@@ -4,19 +4,15 @@ import classNames from "classnames";
 import React, { PropsWithChildren, useState } from "react";
 import Navbar from "./UserNavbar";
 import Sidebar from "./UserSidebar";
+import { usePathname } from "next/navigation";
 
-type LayoutProps = {
-  clearMessages: () => void; // Accept clearMessages function as a prop
-};
-
-const Layout = ({
-  clearMessages,
-  children,
-}: PropsWithChildren<LayoutProps>) => {
+const Layout = ({ children }: PropsWithChildren<LayoutProps>) => {
   const [collapsed, setSidebarCollapsed] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
+  const pathname = usePathname();
+  const isHomePage = pathname === "/login" || pathname === "/signup";
 
-  return (
+  return !isHomePage ? (
     <div
       className={classNames({
         "grid bg-zinc-100 min-h-screen": true,
@@ -29,16 +25,14 @@ const Layout = ({
         collapsed={collapsed}
         setCollapsed={setSidebarCollapsed}
         shown={showSidebar}
-        clearMessages={clearMessages} // Pass the function here
       />
       <div className="">
-        <Navbar
-          onMenuButtonClick={() => setShowSidebar((prev) => !prev)}
-          clearMessages={clearMessages}
-        />
+        <Navbar onMenuButtonClick={() => setShowSidebar((prev) => !prev)} />
         {children}
       </div>
     </div>
+  ) : (
+    children // Directly return children when it's not the home page
   );
 };
 
