@@ -64,6 +64,7 @@ const Navbar = ({ onMenuButtonClick }: Props) => {
 
   const newChathandler = () => {
     localStorage.setItem("currentGroupItems", "New Chat");
+    localStorage.setItem("newChat", "true");
     // clearMessages(); // Call the function to clear messages
   };
 

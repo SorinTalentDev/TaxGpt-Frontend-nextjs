@@ -197,7 +197,9 @@ const Sidebar = ({
           <hr />
           {!collapsed && (
             <div>
-              <p className="pl-4">{TodayMsgItems.length > 0 && "Today"}</p>
+              <p className="pl-4 text-sm font-bold my-2">
+                {TodayMsgItems.length > 0 && "Today"}
+              </p>
               <ul className="pl-4">
                 {TodayMsgItems.map((TodayMsgItem, index) => (
                   <Link
@@ -242,7 +244,7 @@ const Sidebar = ({
                   </Link>
                 ))}
               </ul>
-              <p className="pl-4">
+              <p className="pl-4 text-sm font-bold my-2">
                 {YesterdayMsgItems.length > 0 && "Yesterday"}
               </p>
               <ul className="pl-4">
@@ -280,8 +282,8 @@ const Sidebar = ({
                   </Link>
                 ))}
               </ul>
-              <p className="pl-4">
-                {Last7dayMsgItems.length > 0 && "Previous 7 day"}
+              <p className="pl-4 text-sm font-bold my-2">
+                {Last7dayMsgItems.length > 0 && "Previous 7 Days"}
               </p>
               <ul className="pl-4">
                 {Last7dayMsgItems.map((Last7dayMsgItem, index) => (
@@ -318,8 +320,8 @@ const Sidebar = ({
                   </Link>
                 ))}
               </ul>
-              <p className="pl-4">
-                {Last30dayMsgItems.length > 0 && "Previous 30 day"}
+              <p className="pl-4 text-sm font-bold my-2">
+                {Last30dayMsgItems.length > 0 && "Previous 30 Days"}
               </p>
               <ul className="pl-4">
                 {Last30dayMsgItems.map((Last30dayMsgItem, index) => (

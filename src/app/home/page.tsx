@@ -114,6 +114,18 @@ export default function Page() {
     };
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (localStorage.getItem("newChat") === "true") {
+        clearMessages();
+        localStorage.setItem("newChat", "false");
+      }
+    }, 1000); // Run every 1 second
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   const handleSendMessage = async () => {
     if (input.trim()) {
       setMessages((prev) => [...prev, { role: "user", content: input }]);
