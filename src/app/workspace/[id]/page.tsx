@@ -227,11 +227,7 @@ export default function EditWorkspace({
 
   if (!id) {
     // Render a loading state until the `id` is available
-    return (
-      <Layout clearMessages={clearMessages}>
-        <div>Loading...</div>
-      </Layout>
-    );
+    return <div>Loading...</div>;
   }
   const handleEditWorkspaceName = (name: string) => {
     setWorkspaceName(name);

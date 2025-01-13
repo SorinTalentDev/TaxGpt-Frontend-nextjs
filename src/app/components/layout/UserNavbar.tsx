@@ -8,14 +8,14 @@ import { usePathname } from "next/navigation";
 
 type Props = {
   onMenuButtonClick(): void;
-  clearMessages: () => void; // Accept clearMessages function as a prop
+  // clearMessages: () => void; // Accept clearMessages function as a prop
 };
 
 function toggleDarkMode() {
   document.documentElement.classList.toggle("dark");
 }
 
-const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
+const Navbar = ({ onMenuButtonClick }: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isBellActive, setIsBellActive] = useState(true);
   const [newsCount, setNewsCount] = useState(3);
@@ -64,7 +64,7 @@ const Navbar = ({ onMenuButtonClick, clearMessages }: Props) => {
 
   const newChathandler = () => {
     localStorage.setItem("currentGroupItems", "New Chat");
-    clearMessages(); // Call the function to clear messages
+    // clearMessages(); // Call the function to clear messages
   };
 
   const gotologout = () => {

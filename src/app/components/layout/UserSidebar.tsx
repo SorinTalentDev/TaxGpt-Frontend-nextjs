@@ -24,7 +24,7 @@ type Props = {
   navItems?: NavItem[];
   setCollapsed(collapsed: boolean): void;
   shown: boolean;
-  clearMessages: () => void;
+  // clearMessages: () => void;
 };
 
 const Sidebar = ({

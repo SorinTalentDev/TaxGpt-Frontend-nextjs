@@ -6,6 +6,8 @@ import Navbar from "./UserNavbar";
 import Sidebar from "./UserSidebar";
 import { usePathname } from "next/navigation";
 
+type LayoutProps = {};
+
 const Layout = ({ children }: PropsWithChildren<LayoutProps>) => {
   const [collapsed, setSidebarCollapsed] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);

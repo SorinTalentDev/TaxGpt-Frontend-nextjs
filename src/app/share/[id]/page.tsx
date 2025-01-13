@@ -118,24 +118,22 @@ export default function SharePage({
     console.log("ok!");
   };
   return (
-    <Layout clearMessages={clearMessages}>
-      <div className="w-full dark:bg-[#0a0a0a]">
-        <p className="text-center text-3xl text-black dark:text-white font-bold py-5 font-Ambit">
-          {workspaceName}
-        </p>
-        <div className="flex-grow overflow-y-auto w-[80%] max-md:w-[100%] m-auto scrollbar-none  h-[calc(100vh-149px)]">
-          {loading === false ? (
-            <Threads
-              messageHistory={messageHistory}
-              fetchMessageHistory={fetchMessageHistory}
-            />
-          ) : (
-            <p className="dark:text-white text-black text-center">
-              Loading....
-            </p>
-          )}
-        </div>
+    // <Layout>
+    <div className="w-full dark:bg-[#0a0a0a]">
+      <p className="text-center text-3xl text-black dark:text-white font-bold py-5 font-Ambit">
+        {workspaceName}
+      </p>
+      <div className="flex-grow overflow-y-auto w-[80%] max-md:w-[100%] m-auto scrollbar-none  h-[calc(100vh-149px)]">
+        {loading === false ? (
+          <Threads
+            messageHistory={messageHistory}
+            fetchMessageHistory={fetchMessageHistory}
+          />
+        ) : (
+          <p className="dark:text-white text-black text-center">Loading....</p>
+        )}
       </div>
-    </Layout>
+    </div>
+    // </Layout>
   );
 }
