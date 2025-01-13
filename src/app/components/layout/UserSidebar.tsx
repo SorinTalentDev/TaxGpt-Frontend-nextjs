@@ -17,7 +17,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { Folders, Minus, Plus } from "lucide-react";
-
+import { fetchWorkspacemsglist } from "@/app/utils/fetchworkspacemsglist";
 // Define the props interface
 type Props = {
   collapsed: boolean;
@@ -26,7 +26,14 @@ type Props = {
   shown: boolean;
   // clearMessages: () => void;
 };
+interface Message {
+  message: string;
+}
 
+interface WorkspaceMessageList {
+  workspaceName: string;
+  messages: Message[];
+}
 const Sidebar = ({
   collapsed,
   navItems = defaultNavItems,
@@ -37,9 +44,14 @@ const Sidebar = ({
   const [selectedWorkspaceIndex, setSelectedWorkspaceIndex] = useState<
     number | null
   >(null);
+  const [showMsglist, setShowMsglist] = useState<boolean[]>([]);
+
   const pathname = usePathname(); // Get current pathname
   const Icon = collapsed ? ChevronDoubleRightIcon : ChevronDoubleLeftIcon;
   const [showWorkspaceList, setShowWorkspaceList] = useState<boolean>(false);
+  const [workspaceItemMsglists, setWorkspaceItemMsglists] = useState<
+    WorkspaceMessageList[]
+  >([]);
   const workspaceItems = useWorkspaceItems();
   const TodayMsgItems = useTodayMsgItems();
   const YesterdayMsgItems = useYesterdayMsgItems();
@@ -68,10 +80,38 @@ const Sidebar = ({
     if (Last30daysItems) {
       const parsedItems = JSON.parse(Last30daysItems);
       const Last30dayMsgItems = parsedItems;
-      console.log(parsedItems); // Use the parsed items as needed
     }
   }, []);
 
+  useEffect(() => {
+    const loadMessages = async () => {
+      try {
+        // Fetch the messages from your API
+        const messages = await fetchWorkspacemsglist();
+        // Log the response for debugging
+        // Ensure the response is in the correct format before setting state
+        if (Array.isArray(messages)) {
+          setWorkspaceItemMsglists(messages); // Set state only if data is in the correct format
+        } else {
+          console.error("Fetched data is not an array", messages);
+        }
+      } catch (error) {
+        console.error("Error loading messages:", error);
+      }
+    };
+    loadMessages();
+    const intervalId = setInterval(loadMessages, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Handle workspace toggle
+  const handleWorkspaceToggle = (index: number) => {
+    setShowMsglist((prev) => {
+      const newItems = [...prev];
+      newItems[index] = !newItems[index]; // Toggle the specific index
+      return newItems;
+    });
+  };
   return (
     <div
       className={classNames({
@@ -147,31 +187,81 @@ const Sidebar = ({
 
             {/* Workspace items */}
             {!collapsed && !showWorkspaceList && (
-              <ul className="pl-8">
-                {workspaceItems.map((workspace, index) => (
-                  <Link
-                    key={index}
-                    href={workspace.href}
-                    onClick={() => {
-                      setSelectedWorkspaceIndex(index);
-                      localStorage.setItem("currentGroupItems", "New Chat");
-                    }} // Handle selection on click
-                    className={classNames({
-                      flex: true,
-                      "text-black hover:bg-regal-blue hover:text-white dark:text-white flex":
-                        true,
-                      "transition-colors duration-300": true,
-                      "rounded-md p-2 mx-3 gap-4 ": !collapsed,
-                      "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                      "bg-blue-500 text-white":
-                        selectedWorkspaceIndex === index,
-                    })}
-                  >
-                    <Folders />
-                    {workspace.label}
-                  </Link>
-                ))}
-              </ul>
+              <>
+                {workspaceItems.map((workspace, index) => {
+                  const workspaceMessages = workspaceItemMsglists.find(
+                    (workspaceMsg) =>
+                      workspaceMsg.workspaceName === workspace.label
+                  );
+
+                  return (
+                    <div key={`${index}+${workspace.label}`}>
+                      <div
+                        key={index} // Place key on the outermost element
+                        className={classNames({
+                          flex: true,
+                          "text-black hover:bg-regal-blue hover:text-white dark:text-white justify-between ml-8":
+                            true,
+                          "transition-colors duration-300": true,
+                          "rounded-md p-2 mx-3 gap-4": !collapsed,
+                          "rounded-full p-2 mx-3 w-10 h-10": collapsed,
+                          "bg-blue-500 text-white":
+                            selectedWorkspaceIndex === index,
+                        })}
+                      >
+                        <Link
+                          href={workspace.href}
+                          onClick={() => {
+                            setSelectedWorkspaceIndex(index);
+                            localStorage.setItem(
+                              "currentGroupItems",
+                              "New Chat"
+                            );
+                          }}
+                          className={classNames({
+                            flex: true,
+                            "rounded-md gap-4": !collapsed,
+                          })}
+                        >
+                          <Folders />
+                          {!collapsed && workspace.label}{" "}
+                          {/* Show label only if not collapsed */}
+                        </Link>
+
+                        <div
+                          onClick={() => handleWorkspaceToggle(index)}
+                          className="cursor-pointer"
+                        >
+                          {showMsglist[index] ? <Minus /> : <Plus />}
+                        </div>
+                      </div>
+                      {showMsglist[index] && workspaceMessages && (
+                        <div>
+                          {workspaceMessages.messages.map(
+                            (message, msgIndex) => (
+                              <Link
+                                href={workspace.href}
+                                key={msgIndex}
+                                className={classNames({
+                                  flex: true,
+                                  "text-black hover:bg-slate-400 hover:text-white dark:text-white justify-between my-1":
+                                    true,
+                                  "transition-colors duration-300": true,
+                                  "rounded-md p-2 mr-3 ml-10 gap-4": !collapsed,
+                                })}
+                              >
+                                {message.message.length > 20
+                                  ? `${message.message.slice(0, 25)}...`
+                                  : message.message}
+                              </Link>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
             )}
 
             <Link

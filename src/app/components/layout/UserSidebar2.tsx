@@ -297,7 +297,6 @@ const Sidebar = ({
         const messages = await fetchWorkspacemsglist();
 
         // Log the response for debugging
-        console.log("Fetched messages:", messages);
 
         // Ensure the response is in the correct format before setting state
         if (Array.isArray(messages)) {
