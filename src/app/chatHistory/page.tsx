@@ -96,7 +96,7 @@ export default function Page() {
         setMessageHistory(formattedMessages);
         setFilteredHistory(formattedMessages); // Initialize filtered history
       } else {
-        console.log("Failed to fetch messages:", response.data.message);
+        // console.log("Failed to fetch messages:", response.data.message);
         setMessageHistory([]);
         setFilteredHistory([]);
       }

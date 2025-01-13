@@ -168,7 +168,7 @@ export default function EditWorkspace({
         setMessages(invertedGroups);
         setLoading(false);
       } else {
-        console.log("Failed to fetch messages:", response.data.message);
+        // console.log("Failed to fetch messages:", response.data.message);
         setMessageHistory([]);
       }
     } catch (error) {

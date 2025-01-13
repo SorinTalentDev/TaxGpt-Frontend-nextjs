@@ -95,7 +95,7 @@ export const fetchWorkspacemsglist = async (): Promise<any[]> => {
 
       return groupedMessages; // Return the grouped messages as JSON
     } else {
-      console.log("Failed to fetch messages:", response.data.message);
+      // console.log("Failed to fetch messages:", response.data.message);
       return []; // Return empty array if response is not successful
     }
   } catch (error) {
