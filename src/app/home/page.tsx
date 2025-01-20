@@ -240,7 +240,7 @@ export default function Page() {
             >
               {message.role === "user" ? (
                 <div className="flex justify-end w-full items-center">
-                  <div className="text-black text-lg text-left">
+                  <div className="text-black text-lg text-right">
                     <div
                       className={`message ${message.role} bg-gray-200 inline-block p-4 rounded-full font-Ambit text-black dark:bg-[#1c1c1c] dark:text-white`}
                     >
