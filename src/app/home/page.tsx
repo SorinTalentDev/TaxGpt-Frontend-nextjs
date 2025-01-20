@@ -12,6 +12,7 @@ import Typewriter from "../components/layout/Typewriter";
 import logo from "./../Assets/image/logo.png";
 import { fetchMessageHistory } from "../utils/fetchmessage";
 import toast from "react-hot-toast";
+import PaymentModal from "../components/modal/paymentmodal";
 interface Workspace {
   id: string;
   name: string;
@@ -35,7 +36,7 @@ export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [profileUrl, SetProfileUrl] = useState();
-
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const fetchMessages = async () => {
     const storedData = localStorage.getItem("userdata");
     let userId: string | null = null;
@@ -125,7 +126,6 @@ export default function Page() {
       clearInterval(interval);
     };
   }, []);
-
   const handleSendMessage = async () => {
     if (input.trim()) {
       setMessages((prev) => [...prev, { role: "user", content: input }]);
@@ -240,7 +240,7 @@ export default function Page() {
             >
               {message.role === "user" ? (
                 <div className="flex justify-end w-full items-center">
-                  <div className="text-black text-lg text-right">
+                  <div className="text-black text-lg text-left">
                     <div
                       className={`message ${message.role} bg-gray-200 inline-block p-4 rounded-full font-Ambit text-black dark:bg-[#1c1c1c] dark:text-white`}
                     >
@@ -307,7 +307,13 @@ export default function Page() {
           )}
         </div>
       </div>
+
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+      />
     </div>
+
     // </Layout>
   );
 }

@@ -12,7 +12,11 @@ const Layout = ({ children }: PropsWithChildren<LayoutProps>) => {
   const [collapsed, setSidebarCollapsed] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
   const pathname = usePathname();
-  const isHomePage = pathname === "/login" || pathname === "/signup";
+  const isHomePage =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/admin/login" ||
+    pathname === "/admin/dashboard";
 
   return !isHomePage ? (
     <div

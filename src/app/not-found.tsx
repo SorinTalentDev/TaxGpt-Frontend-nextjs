@@ -6,21 +6,7 @@ import Link from "next/link";
 const NotFound: React.FC = () => {
   return (
     <div className="flex h-screen w-full bg-bg-main">
-      <div className="bg-white overflow snap-none p-2 w-1/6 max-md:hidden">
-        <div className="flex items-center w-full mt-6">
-          <Image
-            src="/image/footer-logo.png"
-            alt="logo"
-            width={40}
-            height={40}
-          />
-          <p className="font-Ambit font-semibold text-2xl ml-4">BotBuzz</p>
-        </div>
-      </div>
       <div className="w-full">
-        <div className="bg-white overflow p-8 shadow-xl">
-          {/* You can place any additional content here */}
-        </div>
         <div>
           <p className="font-Ambit font-bold text-4xl text-center mt-14 text-slate-950">
             Oops.....

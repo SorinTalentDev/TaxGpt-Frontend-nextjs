@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BACKEND_API_URL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
     NEXT_PUBLIC_SOCIAL_URL: process.env.NEXT_PUBLIC_SOCIAL_URL,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_STRIPE_SECRET_KEY: process.env.NEXT_STRIPE_SECRET_KEY,
   },
   images: {
     remotePatterns: [

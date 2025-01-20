@@ -97,16 +97,25 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
       <ReactMarkdown
         rehypePlugins={[remarkGfm]}
         components={{
-          a: ({ children, href }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-regal-blue"
-            >
-              {children}
-            </a>
-          ),
+          a: ({ children, href }) => {
+            // Ensure the href is correctly formatted
+            let fixedHref = href;
+
+            if (href && href.startsWith("https//")) {
+              fixedHref = href.replace("https//", "https://");
+            }
+
+            return (
+              <a
+                href={fixedHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-regal-blue"
+              >
+                {children}
+              </a>
+            );
+          },
           p: ({ children }) => <p className=" leading-10">{children}</p>,
           table: ({ children, ...props }) => (
             <table

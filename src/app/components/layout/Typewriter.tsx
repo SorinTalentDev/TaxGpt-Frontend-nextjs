@@ -4,7 +4,7 @@ const Typewriter: React.FC = () => {
   const words = [
     "Hello!",
     "What can I help with?",
-    "Precision AI for Professionals",
+    "Precision AI for Tax Professionals",
   ];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
