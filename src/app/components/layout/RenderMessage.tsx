@@ -104,12 +104,6 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
             if (href && href.startsWith("https//")) {
               fixedHref = href.replace("https//", "https://");
             }
-            if (href && href.startsWith("https://app.myaiwiz.com/https/")) {
-              fixedHref = href.replace(
-                "https://app.myaiwiz.com/https/",
-                "https://"
-              );
-            }
             return (
               <a
                 href={fixedHref}
