@@ -101,7 +101,7 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
             // Ensure the href is correctly formatted
             let fixedHref = href;
 
-            if (href && href.startsWith("https//")) {
+            if (href && href.startsWith("https/")) {
               fixedHref = href.replace("https//", "https://");
             }
             return (
