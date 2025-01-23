@@ -69,3 +69,23 @@ export const fetchMessageHistory = async (
     return [];
   }
 };
+
+export const MessageHistoryCount = async (userId: string) => {
+  try {
+    const response = await axios.post<ResponseData>(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/message/get`,
+      { userId }
+    );
+
+    console.log(response.data.data);
+    if (response.data.success === 1 && response.data.data) {
+      if (response.data.data.length > 4) {
+        return "true";
+      } else {
+        return "false";
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};

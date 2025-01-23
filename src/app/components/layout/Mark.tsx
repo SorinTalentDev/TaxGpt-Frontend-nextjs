@@ -16,7 +16,7 @@ const Mark = () => {
         />
       </div>
       <div className="text-right items-center ml-3">
-        <p className="font-black text-2xl">MY AI WIZ</p>
+        <p className="font-black text-2xl dark:text-white">MY AI WIZ</p>
         <p className="border-indigo-700 border text-indigo-700 rounded-sm text-center text-sm inline-block px-2 tracking-widest">
           AI FOR PROS
         </p>

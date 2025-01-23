@@ -156,6 +156,7 @@ const PaymentForm: React.FC<{
         {
           transactionId: paymentIntent.id,
           userId: userId,
+          amount: paymentIntent.amount,
         }
       );
 
@@ -165,6 +166,7 @@ const PaymentForm: React.FC<{
       console.log("result: ", result.data);
       localStorage.setItem("userdata", JSON.stringify(result.data.data));
       // Success Notification
+      window.location.href = "/home";
       toast.success("Payment successful! Plan upgraded.");
     } catch (error: any) {
       console.error("Error during payment flow:", error);

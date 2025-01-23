@@ -10,7 +10,10 @@ import RenderMessage from "../components/layout/RenderMessage";
 import Image from "next/image";
 import Typewriter from "../components/layout/Typewriter";
 import logo from "./../Assets/image/logo.png";
-import { fetchMessageHistory } from "../utils/fetchmessage";
+import {
+  fetchMessageHistory,
+  MessageHistoryCount,
+} from "../utils/fetchmessage";
 import toast from "react-hot-toast";
 import PaymentModal from "../components/modal/paymentmodal";
 interface Workspace {
@@ -55,6 +58,7 @@ export default function Page() {
     const date = localStorage.getItem("currentDate") || "";
     const formattedMessages = await fetchMessageHistory(userId, date, groupBy);
 
+    console.log("formatted Message: ", formattedMessages);
     setMessages(formattedMessages);
   };
   const clearMessages = () => {
@@ -86,9 +90,11 @@ export default function Page() {
             created_date: workspace.created_date,
           })
         );
+        console.log("workspace: ", workspacesData);
         localStorage.setItem("workspace", JSON.stringify(workspacesData));
         setWorkspaces(workspacesData);
       } else {
+        localStorage.setItem("workspace", "");
         // toast.error("Can't find workspaces.");
       }
     } catch (error) {
@@ -127,6 +133,40 @@ export default function Page() {
     };
   }, []);
   const handleSendMessage = async () => {
+    const storedData = localStorage.getItem("userdata");
+    let expired_date: string | null = null;
+
+    if (storedData !== null) {
+      const parsedData = JSON.parse(storedData);
+      expired_date = parsedData.expired_date;
+    }
+
+    if (expired_date == "") {
+      const storedData = localStorage.getItem("userdata");
+      let userId: string | null = null;
+
+      if (storedData !== null) {
+        const parsedData = JSON.parse(storedData);
+        userId = parsedData._id;
+      }
+
+      if (!userId) {
+        console.log("User ID is missing. Cannot fetch messages.");
+        return;
+      }
+
+      const result = await MessageHistoryCount(userId);
+
+      if (result === "true") {
+        setIsPaymentModalOpen(true);
+        return;
+      }
+    }
+    // Ensure `expired_date` is compared as a valid date
+    if (expired_date && new Date(expired_date).getTime() < Date.now()) {
+      setIsPaymentModalOpen(true);
+      return;
+    }
     if (input.trim()) {
       setMessages((prev) => [...prev, { role: "user", content: input }]);
       setLoading(true);

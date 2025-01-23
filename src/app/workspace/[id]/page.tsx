@@ -11,6 +11,7 @@ import Image from "next/image";
 import RenderMessage from "@/app/components/layout/RenderMessage";
 import TextLoading from "@/app/components/layout/TextLoading";
 import logo from "./../../Assets/image/logo.png";
+import PaymentModal from "../../components/modal/paymentmodal";
 import {
   ArrowDown,
   // ArrowRight,
@@ -82,7 +83,7 @@ export default function EditWorkspace({
     []
   );
   const [profileUrl, SetProfileUrl] = useState();
-
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   // Handle scrolling
   const handleScroll = () => {
     const container = messagesContainerRef.current;
@@ -235,6 +236,21 @@ export default function EditWorkspace({
   };
 
   const handleSendMessage = async () => {
+    const storedData = localStorage.getItem("userdata");
+    let expired_date: string | null = null;
+
+    if (storedData !== null) {
+      const parsedData = JSON.parse(storedData);
+      expired_date = parsedData.expired_date;
+    }
+    // Ensure `expired_date` is compared as a valid date
+    if (
+      (expired_date && new Date(expired_date).getTime() < Date.now()) ||
+      expired_date === ""
+    ) {
+      setIsPaymentModalOpen(true);
+      return;
+    }
     if (input.trim()) {
       setMessages((prev) => [...prev, { role: "user", content: input }]);
       setMessageLoading(true);
@@ -559,6 +575,10 @@ export default function EditWorkspace({
         onSubmit={handleDeleteWorkspaceName}
         workspaceId={id}
         workspaceName={workspaceName}
+      />
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
       />
     </div>
     // </Layout>

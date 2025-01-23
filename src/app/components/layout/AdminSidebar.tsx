@@ -7,6 +7,7 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
+import Mark from "./Mark";
 
 // add NavItem prop to component prop
 type Props = {
@@ -25,7 +26,7 @@ const Sidebar = ({
   return (
     <div
       className={classNames({
-        "bg-white text-black fixed md:static md:translate-x-0 z-20 shadow-2xl":
+        "bg-white text-black fixed md:static md:translate-x-0 z-20 shadow-2xl dark:bg-[#111111]":
           true,
         "transition-all duration-300 ease-in-out": true,
         "w-[300px]": !collapsed,
@@ -49,13 +50,7 @@ const Sidebar = ({
         >
           {!collapsed && (
             <span className="whitespace-nowrap flex justify-center items-center">
-              <Image
-                src="/image/footer-logo.png"
-                alt="logo"
-                width={40}
-                height={40}
-              />
-              <p className="font-Ambit font-semibold text-2xl ml-4">BotBuzz</p>
+              <Mark />
             </span>
           )}
           <button
@@ -76,7 +71,7 @@ const Sidebar = ({
                 <li
                   key={index}
                   className={classNames({
-                    "text-black hover:bg-regal-blue flex hover:text-white":
+                    "text-black hover:bg-regal-blue flex hover:text-white dark:text-white":
                       true, //colors
                     "transition-colors duration-300": true, //animation
                     "rounded-md p-2 mx-3 gap-4 ": !collapsed,

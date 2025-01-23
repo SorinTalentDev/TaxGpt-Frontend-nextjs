@@ -5,6 +5,7 @@ import { Bell, BellOff, Info, MessageSquareDiff, Moon } from "lucide-react";
 import { destroyCookie } from "nookies";
 import UserProfileModal from "../modal/userprofilemodal";
 import { usePathname } from "next/navigation";
+import PaymentModal from "../modal/paymentmodal";
 
 type Props = {
   onMenuButtonClick(): void;
@@ -22,6 +23,7 @@ const Navbar = ({ onMenuButtonClick }: Props) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [profileUrl, SetProfileUrl] = useState<string | undefined>(undefined);
   const [msgGroup, setMsgGroup] = useState<string>("");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
   useEffect(() => {
@@ -179,13 +181,19 @@ const Navbar = ({ onMenuButtonClick }: Props) => {
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="absolute right-8 mt-32 w-48 bg-white rounded-lg shadow-lg z-50 dark:bg-[#1a1a1a]"
+            className="absolute right-8 mt-44 w-48 bg-white rounded-lg shadow-lg z-50 dark:bg-[#1a1a1a]"
           >
             <button
               className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100 dark:text-white dark:hover:bg-black"
               onClick={openProfileModal}
             >
               <span className="mx-1">Profile Settings</span>
+            </button>
+            <button
+              className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100 dark:text-white dark:hover:bg-black"
+              onClick={() => setIsPaymentModalOpen(true)}
+            >
+              <span className="mx-1">Upgrade Plan</span>
             </button>
             <button
               className="flex items-center w-full text-left px-4 py-2 rounded-lg text-black hover:bg-gray-100 dark:text-white dark:hover:bg-black"
@@ -204,6 +212,10 @@ const Navbar = ({ onMenuButtonClick }: Props) => {
       <UserProfileModal
         isOpen={isProfileModalOpen}
         onClose={closeProfileModal}
+      />
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
       />
     </nav>
   );

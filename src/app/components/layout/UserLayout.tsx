@@ -16,7 +16,10 @@ const Layout = ({ children }: PropsWithChildren<LayoutProps>) => {
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/admin/login" ||
-    pathname === "/admin/dashboard";
+    pathname === "/admin/dashboard" ||
+    pathname === "/admin/documents" ||
+    pathname === "/admin/User" ||
+    pathname === "/admin/transaction";
 
   return !isHomePage ? (
     <div

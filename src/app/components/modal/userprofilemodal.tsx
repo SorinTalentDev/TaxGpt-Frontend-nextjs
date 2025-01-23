@@ -22,6 +22,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
     username: "Sample User",
     email: "sample.user@example.com",
     profile_img: "https://via.placeholder.com/150",
+    expired_date: "",
   });
   const [workspaces, setWorkspaces] = useState<
     Array<{ name: string; created_date: string }>
@@ -46,20 +47,21 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
         email: parsedUserData.email || "sample.user@example.com",
         profile_img:
           parsedUserData.profile_img || "https://via.placeholder.com/150", // Default avatar if not available
+        expired_date: parsedUserData.expired_date,
       });
     }
 
-    const storedWorkspaceData = localStorage.getItem("workspace");
-    if (storedWorkspaceData !== null) {
-      const parsedWorkspaceData = JSON.parse(storedWorkspaceData);
-      const workspacesData = parsedWorkspaceData.map(
-        (workspace: { name: string; created_date: string }) => ({
-          name: workspace.name,
-          created_date: workspace.created_date,
-        })
-      );
-      setWorkspaces(workspacesData);
-    }
+    // const storedWorkspaceData = localStorage.getItem("workspace");
+    // if (storedWorkspaceData !== null) {
+    //   const parsedWorkspaceData = JSON.parse(storedWorkspaceData);
+    //   const workspacesData = parsedWorkspaceData.map(
+    //     (workspace: { name: string; created_date: string }) => ({
+    //       name: workspace.name,
+    //       created_date: workspace.created_date,
+    //     })
+    //   );
+    //   setWorkspaces(workspacesData);
+    // }
   }, []);
 
   const toggleChangePasswordModal = () => {
@@ -256,6 +258,9 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </p>
                 <p className="mb-4 text-center mt-10 dark:text-white">
                   {user.email}
+                </p>
+                <p className="mb-4 text-center mt-10 dark:text-white">
+                  Expired Date: {user.expired_date.split("T")[0]}
                 </p>
               </div>
             )}
