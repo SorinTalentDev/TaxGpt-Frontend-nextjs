@@ -20,11 +20,7 @@ const RenderMessage: React.FC<RenderMessageProps> = ({ message }) => {
     .replace(/【\d+:\d+†source】/g, "") // Remove specific source markers
     .replace(/【\d+:\d+†(p\w+)\.pdf】/g, (match, fileName) => {
       let url;
-      if (fileName === "p17") {
-        url = `https://www.irs.gov/publications/p17`;
-      } else {
-        url = `https://www.irs.gov/pub/irs-pdf/${fileName}.pdf`;
-      }
+      url = `https://www.irs.gov/pub/irs-pdf/${fileName}.pdf`;
       if (!extractedLinks.has(url)) {
         extractedLinks.set(url, fileName); // Map the URL to its unique counter
       }
