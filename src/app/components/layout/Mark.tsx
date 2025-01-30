@@ -1,11 +1,11 @@
 import React from "react";
 import Image from "next/image";
-import markImg from "./../../Assets/image/mark.png";
+import markImg from "./../../Assets/image/logo_new.png";
 
 const Mark = () => {
   return (
     <div className="bg-white flex justify-start items-center p-2 text-right dark:bg-[#111111]">
-      <div className="w-14">
+      <div className="w-48">
         <Image
           src={markImg}
           alt="logo"
@@ -15,12 +15,12 @@ const Mark = () => {
           objectFit="contain"
         />
       </div>
-      <div className="text-right items-center ml-3">
+      {/* <div className="text-right items-center ml-3">
         <p className="font-black text-2xl dark:text-white">MY AI WIZ</p>
         <p className="border-indigo-700 border text-indigo-700 rounded-sm text-center text-sm inline-block px-2 tracking-widest">
           AI FOR PROS
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };
