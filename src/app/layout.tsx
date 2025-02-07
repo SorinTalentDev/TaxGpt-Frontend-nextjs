@@ -17,7 +17,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MyAIWIZ",
+  title: "MyAIWiz",
   description: "Precision AI for Tax Professionals",
 };
 
