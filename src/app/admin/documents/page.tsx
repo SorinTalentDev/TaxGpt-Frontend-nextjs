@@ -27,25 +27,25 @@ export default function Page() {
       { Header: "File Name", accessor: "title" },
       { Header: "Upload Date", accessor: "uploadDate" },
       { Header: "Purpose", accessor: "purpose" },
-      {
-        Header: "Actions",
-        Cell: ({ row }: { row: { original: Document } }) => (
-          <div className="flex space-x-2 justify-center">
-            <button
-              onClick={() => handleEdit(row.original)}
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(row.original.id)}
-              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        ),
-      },
+      // {
+      //   Header: "Actions",
+      //   Cell: ({ row }: { row: { original: Document } }) => (
+      //     <div className="flex space-x-2 justify-center">
+      //       <button
+      //         onClick={() => handleEdit(row.original)}
+      //         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+      //       >
+      //         Edit
+      //       </button>
+      //       <button
+      //         onClick={() => handleDelete(row.original.id)}
+      //         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+      //       >
+      //         Delete
+      //       </button>
+      //     </div>
+      //   ),
+      // },
     ],
     []
   );
@@ -128,7 +128,7 @@ export default function Page() {
             </h1>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-green-500 text-white px-4 py-2 mb-4 rounded hover:bg-green-600 flex"
+              className="bg-green-500 text-white px-4 py-2 mb-4 rounded hover:bg-green-600 flex hidden"
             >
               <Upload />
               <p className="pl-2">Upload</p>

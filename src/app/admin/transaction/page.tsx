@@ -20,11 +20,11 @@ export default function Page() {
   const columns: Column<Transaction>[] = React.useMemo(
     () => [
       //   { Id: "id", accessor: "id" },
-      { Header: "Transaction Id", accessor: "transaction_id" },
-      { Header: "User Id", accessor: "userId" },
+      // { Header: "User Id", accessor: "userId" },
       { Header: "Username", accessor: "username" },
       { Header: "email", accessor: "email" },
       { Header: "Payment Date", accessor: "pay_date" },
+      { Header: "Transaction Id", accessor: "transaction_id" },
       { Header: "Amount (USD)", accessor: "amount" },
       //   {
       //     Header: "Actions",
@@ -77,7 +77,10 @@ export default function Page() {
             userId: transaction.userId,
             username: transaction.username,
             email: transaction.email,
-            pay_date: transaction.pay_date.split("T")[0],
+            pay_date:
+              new Date(transaction.pay_date).toLocaleString("en-US", {
+                timeZone: "America/Los_Angeles",
+              }) + " PST",
             amount: transaction.amount / 100 || "0",
           }));
 
