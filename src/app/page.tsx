@@ -1,10 +1,11 @@
-// src/app/page.js
+// src/app/page.tsx
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 
-export default function HomePage() {
+export default React.memo(function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
@@ -12,4 +13,4 @@ export default function HomePage() {
   }, [router]);
 
   return null; // You can also display a loading indicator if you want
-}
+});

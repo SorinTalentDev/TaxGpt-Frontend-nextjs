@@ -7,7 +7,6 @@ import {
 import { fetchnavbaritems } from "@/app/utils/fetchnavbaritems";
 
 // Define a NavItem type
-// Define NavItem type
 export type NavItem = {
   label: string;
   href: string;
@@ -59,6 +58,11 @@ export const defaultNavItems: NavItem[] = [
     icon: <HomeIcon className="w-6 h-6" />,
   },
   {
+    label: "My documents",
+    href: "/documents",
+    icon: <UserGroupIcon className="w-6 h-6" />,
+  },
+  {
     label: "WorkSpace",
     href: "/workspace",
     icon: <UserGroupIcon className="w-6 h-6" />,
@@ -70,11 +74,19 @@ export const defaultNavItems: NavItem[] = [
   },
 ];
 
-export const useTodayMsgItems = () => {
-  const [todayMsgItems, setTodayMsgItems] = useState<MsgItem[]>([]);
+// New consolidated hook
+export const useMessageItems = () => {
+  const [messageItems, setMessageItems] = useState({
+    today: [] as MsgItem[],
+    yesterday: [] as MsgItem[],
+    last7Days: [] as MsgItem[],
+    last30Days: [] as MsgItem[],
+  });
 
   useEffect(() => {
-    const updateTodayMsgItems = async () => {
+    let isSubscribed = true;
+
+    const updateMessageItems = async () => {
       try {
         const storedData = localStorage.getItem("userdata");
         let userId: string | null = null;
@@ -83,163 +95,79 @@ export const useTodayMsgItems = () => {
           const parsedData = JSON.parse(storedData);
           userId = parsedData._id;
         }
+
         if (userId) {
-          const data = await fetchnavbaritems(userId); // Fetch navbar items using userId
-          const todayData = data.today; // Get today's data from the fetched response
-          // console.log("Todaydata : ", todayData);
-          // Transform the 'today' data into the NavItem format
-          const transformedTodayMsgItems: MsgItem[] = todayData.map((item) => ({
-            label: `${item.groupBy}`, // You can format this label however you'd like
-            href: `/home`, // Assuming the createdDate is a valid query parameter
-            createDate: item.latestDate,
-          }));
+          const data = await fetchnavbaritems(userId);
 
-          setTodayMsgItems(transformedTodayMsgItems);
-        }
-      } catch (error) {
-        console.error("Error fetching today's message items:", error);
-      }
-    };
+          if (!isSubscribed) return;
 
-    updateTodayMsgItems(); // Call the function to update the state
-
-    const interval = setInterval(updateTodayMsgItems, 1000); // Optionally, you can use an interval to refresh the data
-
-    return () => clearInterval(interval); // Cleanup the interval when the component is unmounted
-  }, []); // Run the effect whenever the userId changes
-
-  return todayMsgItems;
-};
-
-export const useYesterdayMsgItems = () => {
-  const [YesterdayMsgItems, setYesterdayMsgItems] = useState<MsgItem[]>([]);
-
-  useEffect(() => {
-    const updateYesterdayMsgItems = async () => {
-      try {
-        const storedData = localStorage.getItem("userdata");
-        let userId: string | null = null;
-
-        if (storedData !== null) {
-          const parsedData = JSON.parse(storedData);
-          userId = parsedData._id;
-        }
-        if (userId) {
-          const data = await fetchnavbaritems(userId); // Fetch navbar items using userId
-          const YesterdayData = data.yesterday; // Get today's data from the fetched response
-          // console.log("data : ", YesterdayData);
-          // Transform the 'today' data into the NavItem format
-          const transformedYesterdayMsgItems: MsgItem[] = YesterdayData.map(
-            (item) => ({
-              label: `${item.groupBy}`, // You can format this label however you'd like
-              href: `/home`, // Assuming the createdDate is a valid query parameter
+          const transformedData = {
+            today: data.today.map((item) => ({
+              label: `${item.groupBy}`,
+              href: "/home",
               createDate: item.latestDate,
-            })
-          );
-
-          setYesterdayMsgItems(transformedYesterdayMsgItems);
-        }
-      } catch (error) {
-        console.error("Error fetching today's message items:", error);
-      }
-    };
-
-    updateYesterdayMsgItems(); // Call the function to update the state
-
-    const interval = setInterval(updateYesterdayMsgItems, 1000); // Optionally, you can use an interval to refresh the data
-
-    return () => clearInterval(interval); // Cleanup the interval when the component is unmounted
-  }, []); // Run the effect whenever the userId changes
-
-  return YesterdayMsgItems;
-};
-
-export const useLast7dayMsgItems = () => {
-  const [Last7dayMsgItems, setLast7dayMsgItems] = useState<MsgItem[]>([]);
-
-  useEffect(() => {
-    const updateLast7dayMsgItems = async () => {
-      try {
-        const storedData = localStorage.getItem("userdata");
-        let userId: string | null = null;
-
-        if (storedData !== null) {
-          const parsedData = JSON.parse(storedData);
-          userId = parsedData._id;
-        }
-        if (userId) {
-          const data = await fetchnavbaritems(userId); // Fetch navbar items using userId
-          const Last7dayData = data.last7Days; // Get today's data from the fetched response
-          // console.log("data : ", Last7dayData);
-          // Transform the 'today' data into the NavItem format
-          const transformedLast7dayMsgItems: MsgItem[] = Last7dayData.map(
-            (item) => ({
-              label: `${item.groupBy}`, // You can format this label however you'd like
-              href: `/home`, // Assuming the createdDate is a valid query parameter
+            })),
+            yesterday: data.yesterday.map((item) => ({
+              label: `${item.groupBy}`,
+              href: "/home",
               createDate: item.latestDate,
-            })
-          );
-
-          setLast7dayMsgItems(transformedLast7dayMsgItems);
-        }
-      } catch (error) {
-        console.error("Error fetching today's message items:", error);
-      }
-    };
-
-    updateLast7dayMsgItems(); // Call the function to update the state
-
-    const interval = setInterval(updateLast7dayMsgItems, 1000); // Optionally, you can use an interval to refresh the data
-
-    return () => clearInterval(interval); // Cleanup the interval when the component is unmounted
-  }, []); // Run the effect whenever the userId changes
-
-  return Last7dayMsgItems;
-};
-
-export const useLast30dayMsgItems = () => {
-  const [Last30dayMsgItems, setLast30dayMsgItems] = useState<MsgItem[]>([]);
-
-  useEffect(() => {
-    const updateLast30dayMsgItems = async () => {
-      try {
-        const storedData = localStorage.getItem("userdata");
-        let userId: string | null = null;
-
-        if (storedData !== null) {
-          const parsedData = JSON.parse(storedData);
-          userId = parsedData._id;
-        }
-        if (userId) {
-          const data = await fetchnavbaritems(userId); // Fetch navbar items using userId
-          const Last30dayData = data.last30Days; // Get today's data from the fetched response
-          // console.log("data : ", Last30dayData);
-          // Transform the 'today' data into the NavItem format
-          const transformedLast30dayMsgItems: MsgItem[] = Last30dayData.map(
-            (item) => ({
-              label: `${item.groupBy}`, // You can format this label however you'd like
-              href: `/home`, // Assuming the createdDate is a valid query parameter
+            })),
+            last7Days: data.last7Days.map((item) => ({
+              label: `${item.groupBy}`,
+              href: "/home",
               createDate: item.latestDate,
-            })
-          );
+            })),
+            last30Days: data.last30Days.map((item) => ({
+              label: `${item.groupBy}`,
+              href: "/home",
+              createDate: item.latestDate,
+            })),
+          };
 
-          setLast30dayMsgItems(transformedLast30dayMsgItems);
+          setMessageItems(transformedData);
           localStorage.setItem(
             "Last30dayMsgItems",
-            JSON.stringify({ transformedLast30dayMsgItems })
+            JSON.stringify(transformedData.last30Days)
           );
         }
       } catch (error) {
-        console.error("Error fetching today's message items:", error);
+        console.error("Error fetching message items:", error);
       }
     };
 
-    updateLast30dayMsgItems(); // Call the function to update the state
+    const handleStorageChange = (e: StorageEvent) => {
+      if (
+        (e.key === "ChangeSidebarState" && e.newValue === "true") ||
+        (e.key === "refreshSidebar" && e.newValue === "true") ||
+        (e.key === "newChat" && e.newValue === "true")
+      ) {
+        updateMessageItems();
+        localStorage.setItem(e.key, "false");
+      }
+    };
 
-    const interval = setInterval(updateLast30dayMsgItems, 1000); // Optionally, you can use an interval to refresh the data
+    // Initial fetch
+    updateMessageItems();
 
-    return () => clearInterval(interval); // Cleanup the interval when the component is unmounted
-  }, []); // Run the effect whenever the userId changes
+    // Set up event listeners
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("updateMessages", () => updateMessageItems());
 
-  return Last30dayMsgItems;
+    // Periodic update every 30 seconds instead of every second
+    const interval = setInterval(updateMessageItems, 30000);
+
+    return () => {
+      isSubscribed = false;
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("updateMessages", () => updateMessageItems());
+      clearInterval(interval);
+    };
+  }, []);
+
+  return messageItems;
+};
+
+// Add this utility function
+export const triggerMessageUpdate = () => {
+  window.dispatchEvent(new Event("updateMessages"));
 };

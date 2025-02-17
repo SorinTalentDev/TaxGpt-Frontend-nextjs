@@ -6,10 +6,7 @@ import {
   defaultNavItems,
   NavItem,
   useWorkspaceItems,
-  useTodayMsgItems,
-  useYesterdayMsgItems,
-  useLast7dayMsgItems,
-  useLast30dayMsgItems,
+  useMessageItems,
 } from "./UserNavItems";
 import {
   ChevronDoubleLeftIcon,
@@ -53,10 +50,11 @@ const Sidebar = ({
     WorkspaceMessageList[]
   >([]);
   const workspaceItems = useWorkspaceItems();
-  const TodayMsgItems = useTodayMsgItems();
-  const YesterdayMsgItems = useYesterdayMsgItems();
-  const Last7dayMsgItems = useLast7dayMsgItems();
-  const Last30dayMsgItems = useLast30dayMsgItems();
+  const messageItems = useMessageItems();
+  const TodayMsgItems = messageItems.today;
+  const YesterdayMsgItems = messageItems.yesterday;
+  const Last7dayMsgItems = messageItems.last7Days;
+  const Last30dayMsgItems = messageItems.last30Days;
   const getBaseUrl = (url: string) => {
     const parsedUrl = new URL(url, window.location.origin);
     return parsedUrl.pathname;
@@ -158,9 +156,24 @@ const Sidebar = ({
               {navItems[0].icon}
               <span>{!collapsed && navItems[0].label}</span>
             </Link>
-
-            <div
+            <Link
               key={1}
+              href={navItems[1].href}
+              className={classNames({
+                flex: true,
+                "text-black hover:bg-regal-blue hover:text-white dark:text-white":
+                  true,
+                "transition-colors duration-300": true,
+                "rounded-md p-2 mx-3 gap-4 ": !collapsed,
+                "rounded-full p-2 mx-3 w-10 h-10": collapsed,
+                "bg-blue-500 text-white": selectedIndex === 1,
+              })}
+            >
+              {navItems[1].icon}
+              <span>{!collapsed && navItems[1].label}</span>
+            </Link>
+            <div
+              key={2}
               onClick={() =>
                 localStorage.setItem("currentGroupItems", "New Chat")
               }
@@ -171,7 +184,7 @@ const Sidebar = ({
                 "transition-colors duration-300": true,
                 "rounded-md p-2 mx-3 gap-4 ": !collapsed,
                 "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                "bg-blue-500 text-white": selectedIndex === 1,
+                "bg-blue-500 text-white": selectedIndex === 2,
               })}
             >
               <Link href="/workspace" className="flex items-center gap-4">
@@ -265,8 +278,8 @@ const Sidebar = ({
             )}
 
             <Link
-              key={2}
-              href={navItems[2].href}
+              key={3}
+              href={navItems[3].href}
               onClick={() =>
                 localStorage.setItem("currentGroupItems", "New Chat")
               }
@@ -277,11 +290,11 @@ const Sidebar = ({
                 "transition-colors duration-300": true,
                 "rounded-md p-2 mx-3 gap-4 ": !collapsed,
                 "rounded-full p-2 mx-3 w-10 h-10": collapsed,
-                "bg-blue-500 text-white": selectedIndex === 2,
+                "bg-blue-500 text-white": selectedIndex === 3,
               })}
             >
-              {navItems[2].icon}
-              <span>{!collapsed && navItems[2].label}</span>
+              {navItems[3].icon}
+              <span>{!collapsed && navItems[3].label}</span>
             </Link>
           </ul>
           <hr />

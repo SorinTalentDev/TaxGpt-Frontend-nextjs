@@ -66,7 +66,6 @@ const DeleteWorkspaceModal: React.FC<DeleteWorkspaceModalProps> = ({
       <div className="bg-white rounded-lg p-6 w-96 relative dark:bg-[#1a1a1a]">
         <h2 className="text-lg font-bold mb-4">Delete the Space</h2>
         <p className="mb-4">Are you sure you want to delete the workspace?</p>
-
         <div className="flex justify-end space-x-4 mt-4">
           <button
             type="button"

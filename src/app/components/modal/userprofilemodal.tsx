@@ -50,18 +50,6 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
         expired_date: parsedUserData.expired_date,
       });
     }
-
-    // const storedWorkspaceData = localStorage.getItem("workspace");
-    // if (storedWorkspaceData !== null) {
-    //   const parsedWorkspaceData = JSON.parse(storedWorkspaceData);
-    //   const workspacesData = parsedWorkspaceData.map(
-    //     (workspace: { name: string; created_date: string }) => ({
-    //       name: workspace.name,
-    //       created_date: workspace.created_date,
-    //     })
-    //   );
-    //   setWorkspaces(workspacesData);
-    // }
   }, []);
 
   const toggleChangePasswordModal = () => {
@@ -260,7 +248,9 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   {user.email}
                 </p>
                 <p className="mb-4 text-center mt-10 dark:text-white">
-                  Expired Date: {user.expired_date.split("T")[0]}
+                  {new Date(user.expired_date) < new Date()
+                    ? "Please upgrade the plan"
+                    : `Expired Date: ${user.expired_date.split("T")[0]}`}
                 </p>
               </div>
             )}

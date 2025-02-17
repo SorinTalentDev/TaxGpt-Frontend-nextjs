@@ -99,9 +99,9 @@ const RegisterForm = () => {
         toast.success(`Welcome, ${username}! Please login.`);
         // You can navigate the user to the login page, or keep the success message
         // setIsVerificationModalOpen(true);
-        // router.push("/home"); // Optional: Navigate to home page
+        router.push("/home"); // Optional: Navigate to home page
       } else {
-        setErrorMessage("Something went wrong. Please try again.");
+        setErrorMessage(response.data.message);
       }
     } catch (error) {
       setErrorMessage(`An error occurred. Please try again. ${error}`);
@@ -121,12 +121,6 @@ const RegisterForm = () => {
 
       // Get user info
       const user = result.user;
-      console.log("New User:", {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        uid: user.uid,
-      });
       const userPayload = {
         username: user.displayName,
         email: user.email,
@@ -142,12 +136,10 @@ const RegisterForm = () => {
         status: "active",
         isDelete: "0",
       };
-      console.log("userPayload: ", userPayload);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/googleSignup`,
         userPayload
       );
-      console.log("response: ", response);
       if (response.data.success === 1) {
         setSuccessMessage("Registration successful!");
         // You can navigate the user to the login page, or keep the success message
