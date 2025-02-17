@@ -36,25 +36,25 @@ export default function Page() {
       { Header: "Expired Date", accessor: "expiredDate" },
       { Header: "Last login", accessor: "updateDate"},
       { Header: "membership", accessor: "membershipStatus"},
-      {
-        Header: "Actions",
-        Cell: ({ row }: { row: { original: User } }) => (
-          <div className="flex space-x-2 items-center justify-center">
-            <button
-              onClick={() => handleEdit(row.original)}
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(row.original.id)}
-              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        ),
-      },
+      // {
+      //   Header: "Actions",
+      //   Cell: ({ row }: { row: { original: User } }) => (
+      //     <div className="flex space-x-2 items-center justify-center">
+      //       <button
+      //         onClick={() => handleEdit(row.original)}
+      //         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+      //       >
+      //         Edit
+      //       </button>
+      //       <button
+      //         onClick={() => handleDelete(row.original.id)}
+      //         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+      //       >
+      //         Delete
+      //       </button>
+      //     </div>
+      //   ),
+      // },
     ],
     [filterInput]
   );
