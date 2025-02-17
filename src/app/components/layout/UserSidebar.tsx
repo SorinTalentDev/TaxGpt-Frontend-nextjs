@@ -163,7 +163,7 @@ const Sidebar = ({
                 flex: true,
                 "text-black hover:bg-regal-blue hover:text-white dark:text-white":
                   true,
-                "transition-colors duration-300": true,
+                "transition-colors duration-300 hidden": true,
                 "rounded-md p-2 mx-3 gap-4 ": !collapsed,
                 "rounded-full p-2 mx-3 w-10 h-10": collapsed,
                 "bg-blue-500 text-white": selectedIndex === 1,
