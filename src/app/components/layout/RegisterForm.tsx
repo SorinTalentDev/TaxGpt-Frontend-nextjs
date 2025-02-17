@@ -50,15 +50,11 @@ const RegisterForm = () => {
     setIsVerificationModalOpen(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setIsFormSubmitted(true); // Set form submission flag to true
-
-    // Reset error and success messages
+    setIsFormSubmitted(true);
     setErrorMessage("");
     setSuccessMessage("");
-
-    // If any field is invalid, prevent form submission
     if (
       !username ||
       !email ||
@@ -69,18 +65,16 @@ const RegisterForm = () => {
     ) {
       return;
     }
-
-    setIsLoading(true); // Set loading state
+    setIsLoading(true);
 
     try {
-      // API call to register the user
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/signup`,
         {
           username,
           email,
           password,
-          type: "mail", // Since you are using mail for this registration
+          type: "mail",
           gmailId: "",
           linkedinId: "",
           profileImg: "",
@@ -93,21 +87,17 @@ const RegisterForm = () => {
           verifystate: "false",
         }
       );
-
       if (response.data.success === 1) {
-        // setSuccessMessage("Registration successful!");
         toast.success(`Welcome, ${username}! Please login.`);
-        // You can navigate the user to the login page, or keep the success message
-        // setIsVerificationModalOpen(true);
-        router.push("/home"); // Optional: Navigate to home page
+        router.push("/home");
       } else {
-        setErrorMessage(response.data.message);
+        toast.error("User is already registered! Please log in.");
       }
     } catch (error) {
-      setErrorMessage(`An error occurred. Please try again. ${error}`);
-      toast.error("User is already registered! Please log in.");
+      // Properly handle the error message
+      toast.error("Error signing up with mail");
     } finally {
-      setIsLoading(false); // Stop loading after the request completes
+      setIsLoading(false);
     }
   };
 
