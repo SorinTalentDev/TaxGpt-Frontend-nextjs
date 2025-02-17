@@ -105,6 +105,7 @@ const RegisterForm = () => {
       }
     } catch (error) {
       setErrorMessage(`An error occurred. Please try again. ${error}`);
+      toast.error("User is already registered! Please log in.");
     } finally {
       setIsLoading(false); // Stop loading after the request completes
     }
