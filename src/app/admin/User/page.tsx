@@ -14,17 +14,28 @@ interface User {
   email: string;
   createDate: string;
   expiredDate: string;
+  updateDate: string;
+  membershipStatus: string;
+  loginType: string;
 }
 export default function Page() {
   const [data, setData] = useState<User[]>([]);
+  const [filterInput, setFilterInput] = useState({
+    userId: "",
+    username: "",
+    email: "",
+  });
+
   const columns: Column<User>[] = React.useMemo(
     () => [
-      //   { Id: "id", accessor: "id" },
-      { Header: "UserId", accessor: "userId" },
+      // { Header: "UserId", accessor: "userId" },
       { Header: "Username", accessor: "username" },
       { Header: "Email", accessor: "email" },
+      {Header: "Type", accessor:"loginType"},
       { Header: "Create Date", accessor: "createDate" },
       { Header: "Expired Date", accessor: "expiredDate" },
+      { Header: "Last login", accessor: "updateDate"},
+      { Header: "membership", accessor: "membershipStatus"},
       {
         Header: "Actions",
         Cell: ({ row }: { row: { original: User } }) => (
@@ -45,7 +56,7 @@ export default function Page() {
         ),
       },
     ],
-    []
+    [filterInput]
   );
 
   const handleDelete = (id: number) => {
@@ -75,6 +86,11 @@ export default function Page() {
             email: user.email || "N/A",
             createDate: user.create_date.split("T")[0],
             expiredDate: user.expired_date.split("T")[0],
+            loginType: user.login_type,
+            updateDate: new Date(user.update_date).toLocaleString("en-US", {
+              timeZone: "America/Los_Angeles",
+            }) + " PST",
+            membershipStatus: new Date(user.expired_date) > new Date() ? "Pros" : "",  // Checking expiry status
           }));
 
         setData(transformedData || []);

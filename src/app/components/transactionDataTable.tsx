@@ -9,6 +9,7 @@ import {
   useTable,
   useSortBy,
   usePagination,
+  useGlobalFilter,
   Column,
   TableInstance,
   TableState,
@@ -37,7 +38,9 @@ interface DataTableProps {
 
 // We define TableInstanceWithPagination type to include pagination
 interface TableInstanceWithPagination extends TableInstance<Transaction> {
-  state: TableStateWithPagination;
+  state: TableStateWithPagination & {
+    globalFilter: string;
+  };
   page: any[]; // `page` is an array of rows on the current page
   nextPage: () => void;
   previousPage: () => void;
@@ -47,6 +50,7 @@ interface TableInstanceWithPagination extends TableInstance<Transaction> {
   pageCount: number;
   setPageSize: (size: number) => void;
   gotoPage: (pageIndex: number) => void;
+  setGlobalFilter: (filterValue: string) => void;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
@@ -61,36 +65,54 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
     canNextPage,
     canPreviousPage,
     pageOptions,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, globalFilter },
     gotoPage,
     pageCount,
     setPageSize,
+    setGlobalFilter,
   } = useTable<Transaction>(
     {
       columns: React.useMemo(
         () => [
           {
-            Header: "No", // Column header
+            Header: "No",
             Cell: ({ row }: { row: { index: number } }) => (
-              <span>{row.index + 1 + pageIndex * pageSize}</span> // Increment row number
+              <span>{row.index + 1 + pageIndex * pageSize}</span>
             ),
-            disableSortBy: true, // Disable sorting for this column
+            id: "rowNumber",
+            sortType: (rowA: { index: number }, rowB: { index: number }) => {
+              const a = rowA.index;
+              const b = rowB.index;
+              return a < b ? -1 : a > b ? 1 : 0;
+            },
           },
-          ...columns, // Spread the existing columns
+          ...columns,
         ],
         [columns]
       ),
       data,
-      initialState: { pageIndex: 0, pageSize: 10 }, // Default state: first page, 5 rows per page
+      initialState: { pageIndex: 0, pageSize: 10 },
     } as UseTableOptions<Transaction> & {
       initialState: TableStateWithPagination;
     },
+    useGlobalFilter, // Add global filter hook
     useSortBy, // Sorting plugin
     usePagination // Pagination plugin
   ) as TableInstanceWithPagination;
 
   return (
     <div className="overflow-x-auto">
+      {/* Add Search Filter */}
+      <div className="mb-4">
+        <input
+          type="text"
+          value={globalFilter || ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder="Search in all columns..."
+          className="p-2 border rounded w-full dark:bg-[#111111] dark:border-[#111111] dark:text-white"
+        />
+      </div>
+
       {/* Table */}
       <table
         {...getTableProps()}
@@ -104,13 +126,21 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
                 key={headerGroup.id || `headerGroup-${groupIndex}`} // Use `id` or fallback to `groupIndex`
                 className="bg-gray-100 dark:bg-[#1c1c1c]"
               >
-                {headerGroup.headers.map((column, columnIndex) => (
+                {headerGroup.headers.map((column: any, columnIndex) => (
                   <th
-                    {...column.getHeaderProps()} // Use `getHeaderProps()` directly
-                    key={column.id || `column-${columnIndex}`} // Use `id` or fallback to `columnIndex`
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={column.id || `column-${columnIndex}`}
                     className="px-4 py-2 border border-gray-200 cursor-pointer dark:border-[#111111]"
                   >
                     {column.render("Header")}
+                    {/* Add sort indicator */}
+                    <span className="ml-2">
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </span>
                   </th>
                 ))}
               </tr>

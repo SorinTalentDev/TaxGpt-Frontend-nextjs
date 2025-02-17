@@ -9,6 +9,7 @@ import {
   useTable,
   useSortBy,
   usePagination,
+  useGlobalFilter,
   Column,
   TableInstance,
   TableState,
@@ -23,6 +24,9 @@ interface User {
   email: string;
   createDate: string;
   expiredDate: string;
+  updateDate: string;
+  membershipStatus: string;
+  loginType: string;
 }
 
 interface TableStateWithPagination extends TableState<User> {
@@ -37,7 +41,9 @@ interface DataTableProps {
 
 // We define TableInstanceWithPagination type to include pagination
 interface TableInstanceWithPagination extends TableInstance<User> {
-  state: TableStateWithPagination;
+  state: TableStateWithPagination & {
+    globalFilter: string;
+  };
   page: any[]; // `page` is an array of rows on the current page
   nextPage: () => void;
   previousPage: () => void;
@@ -47,6 +53,7 @@ interface TableInstanceWithPagination extends TableInstance<User> {
   pageCount: number;
   setPageSize: (size: number) => void;
   gotoPage: (pageIndex: number) => void;
+  setGlobalFilter: (filterValue: string) => void;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
@@ -61,10 +68,11 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
     canNextPage,
     canPreviousPage,
     pageOptions,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, globalFilter },
     gotoPage,
     pageCount,
     setPageSize,
+    setGlobalFilter,
   } = useTable<User>(
     {
       columns: React.useMemo(
@@ -75,6 +83,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
               <span>{row.index + 1 + pageIndex * pageSize}</span> // Increment row number
             ),
             disableSortBy: true, // Disable sorting for this column
+            disableFilters: true,
           },
           ...columns, // Spread the existing columns
         ],
@@ -82,13 +91,38 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
       ),
       data,
       initialState: { pageIndex: 0, pageSize: 10 }, // Default state: first page, 5 rows per page
+      filterTypes: {
+        text: (rows: any, id: any, filterValue: any) => {
+          return rows.filter((row: any) => {
+            const rowValue = row.values[id];
+            return rowValue !== undefined
+              ? String(rowValue)
+                  .toLowerCase()
+                  .includes(String(filterValue).toLowerCase())
+              : true;
+          });
+        },
+      },
+      defaultColumn: {
+        Filter: () => null,
+      },
     } as UseTableOptions<User> & { initialState: TableStateWithPagination },
+    useGlobalFilter,
     useSortBy, // Sorting plugin
     usePagination // Pagination plugin
   ) as TableInstanceWithPagination;
 
   return (
     <div className="overflow-x-auto">
+       <div className="mb-4">
+        <input
+          type="text"
+          value={globalFilter || ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder="Search in all columns..."
+          className="p-2 border rounded w-full dark:bg-[#111111] dark:border-[#111111] dark:text-white"
+        />
+      </div>
       {/* Table */}
       <table
         {...getTableProps()}
@@ -96,21 +130,30 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
       >
         <thead>
           {headerGroups.map((headerGroup: HeaderGroup<User>, groupIndex) => (
-            <tr
-              {...headerGroup.getHeaderGroupProps()}
-              key={headerGroup.id || `headerGroup-${groupIndex}`} // Use `id` or fallback to `groupIndex`
-              className="bg-gray-100 dark:bg-[#1c1c1c]"
-            >
-              {headerGroup.headers.map((column, columnIndex) => (
-                <th
-                  {...column.getHeaderProps()} // Use `getHeaderProps()` directly
-                  key={column.id || `column-${columnIndex}`} // Use `id` or fallback to `columnIndex`
-                  className="px-4 py-2 border border-gray-200 cursor-pointer dark:border-[#111111]"
-                >
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
+            <React.Fragment key={headerGroup.id || `headerGroup-${groupIndex}`}>
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                key={headerGroup.id || `headerGroup-${groupIndex}`} // Use `id` or fallback to `groupIndex`
+                className="bg-gray-100 dark:bg-[#1c1c1c]"
+              >
+                {headerGroup.headers.map((column: any, columnIndex) => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={column.id || `column-${columnIndex}`}
+                    className="px-4 py-2 border border-gray-200 cursor-pointer dark:border-[#111111]"
+                  >
+                    {column.render("Header")}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </React.Fragment>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
