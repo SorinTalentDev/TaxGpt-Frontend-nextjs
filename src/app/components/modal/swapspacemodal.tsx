@@ -33,9 +33,10 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
         toast.error("User not found. Please log in again.");
         return;
       }
-
+  
       const { _id } = JSON.parse(userdata);
       const userId = _id;
+  
       axios
         .post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/workspace/getAll`, {
           userId,
@@ -45,6 +46,12 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
             const workspaces = response.data.data.map(
               (workspace: { workspaceName: string }) => workspace.workspaceName
             );
+  
+            if (workspaces.length === 1) {
+              onClose();
+              toast.error("You must have more than one workspace. Create another workspace.");
+            }
+  
             setSampleWorkspaces(workspaces);
           } else {
             toast.error(response.data.message || "Failed to load workspaces.");
@@ -114,7 +121,6 @@ const SwapWorkspaceModal: React.FC<SwapWorkspaceModalProps> = ({
           workspaceName,
         }
       );
-      console.log("response:", response);
       if (response.data.success === 1) {
         // Notify parent component
         onSubmit(workspaceName);
