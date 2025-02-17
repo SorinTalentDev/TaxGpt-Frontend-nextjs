@@ -73,20 +73,21 @@ export const fetchnavbaritems = async (
         };
 
         if (diffInDays === 0) {
-          if (
-            today.find(
-              (existingGroup) => existingGroup.groupBy === group.groupBy
-            )
-          ) {
-            return; // Skip adding if the group already exists
+          if (!today.some((existingGroup) => existingGroup.groupBy === group.groupBy)) {
+            today.push(group);
           }
-          today.push(group);
         } else if (diffInDays === 1) {
-          yesterday.push(group);
+          if (!yesterday.some((existingGroup) => existingGroup.groupBy === group.groupBy)) {
+            yesterday.push(group);
+          }
         } else if (diffInDays <= 7) {
-          last7Days.push(group);
+          if (!last7Days.some((existingGroup) => existingGroup.groupBy === group.groupBy)) {
+            last7Days.push(group);
+          }
         } else if (diffInDays <= 30) {
-          last30Days.push(group);
+          if (!last30Days.some((existingGroup) => existingGroup.groupBy === group.groupBy)) {
+            last30Days.push(group);
+          }
         }
       });
 
