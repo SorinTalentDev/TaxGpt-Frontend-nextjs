@@ -8,6 +8,11 @@ export function middleware(request: NextRequest) {
   if (
     currentPath === "/admin/login" ||
     currentPath === "/admin/dashboard" ||
+    currentPath === "/admin/User" ||
+    currentPath === "/admin/setting" ||
+    currentPath === "/admin/documents" ||
+    currentPath === "/admin/setting" ||
+    currentPath === "/admin/transaction" ||
     currentPath === "/admin"
   ) {
     return;
