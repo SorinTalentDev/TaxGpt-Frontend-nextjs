@@ -43,8 +43,14 @@ const Navbar = ({ onMenuButtonClick }: Props) => {
   }, []);
 
   useEffect(() => {
-    const parsedUserData = JSON.parse(localStorage.getItem("userdata")!);
-    SetProfileUrl(parsedUserData.profile_img);
+    const storedUserData = localStorage.getItem("userdata");
+  
+    if (storedUserData) {
+      const parsedUserData = JSON.parse(storedUserData);
+      SetProfileUrl(parsedUserData.profile_img || "https://eu.ui-avatars.com/api/?name=admin&size=250");
+    } else {
+      SetProfileUrl("https://eu.ui-avatars.com/api/?name=admin&size=250");
+    }
   }, []);
 
   const toggleDropdown = () => {
