@@ -30,6 +30,7 @@ import DeleteWorkspaceModal from "@/app/components/modal/deleteworkspacemodal";
 import SocialShare from "@/app/components/layout/socialshare";
 import Spinner from "@/app/components/layout/Spinner";
 import UserInvite from "@/app/components/layout/Userinvite";
+import UserInviteModal from "@/app/components/modal/userinvitemodal";
 
 // Define the types for the message and response data
 interface Message {
@@ -65,6 +66,7 @@ export default function EditWorkspace({
   params: Promise<{ id: string; name: string }>;
 }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [workspaceName, setWorkspaceName] = useState<string>("");
   const [id, setId] = useState<string | null>(null);
@@ -180,18 +182,24 @@ export default function EditWorkspace({
 
   // Use `React.use` to unwrap async params
   useEffect(() => {
-    asyncParams.then((params) => {
-      setId(params.id); // Unwrap and set the `id`
-      // Get the workspace name from the query params
-      const workspaceNameFromQuery = searchParams.get("name");
-      if (workspaceNameFromQuery) {
-        setWorkspaceName(workspaceNameFromQuery); // Set workspace name
+    const fetchParams = async () => {
+      try {
+        const params = await asyncParams; // Wait for promise to resolve
+        setId(params.id); // Unwrap and set the `id`
+  
+        // Get the workspace name from the query params
+        const workspaceNameFromQuery = searchParams?.get("name");
+        if (workspaceNameFromQuery) {
+          setWorkspaceName(workspaceNameFromQuery); // Set workspace name
+        }
+      } catch (error) {
+        console.error("Error fetching asyncParams:", error);
       }
-      // console.log("params.name:", workspaceNameFromQuery);
-      // setWorkspaceName(params.name); // Set the initial workspace name
-      // console.log(params);
-    });
-  }, [asyncParams]);
+    };
+  
+    fetchParams();
+  }, [asyncParams, searchParams]);
+  
   useEffect(() => {
     const parsedUserData = JSON.parse(localStorage.getItem("userdata")!);
     SetProfileUrl(parsedUserData.profile_img);
@@ -309,15 +317,15 @@ export default function EditWorkspace({
         <div className="flex items-center justify-between text-white border-b-2 p-3 border-b-gray-300 dark:border-b-[#2b2c2d]">
           <div className="flex items-center text-5xl max-md:hidden">
             <RxAvatar className=" text-black dark:text-white max-md:hidden hidden" />
-            {/* <button className="flex items-center mx-5 text-[#20b8cd] max-md:mx-0">
+            <button className="flex items-center mx-5 text-[#20b8cd] max-md:mx-0" onClick={()=> setIsInviteModalOpen(true)}>
               <UserPlus />
               <p className="text-lg mx-2 max-md:mx-0 max-md:ml-2">Invite</p>
-            </button> */}
-            <UserInvite
+            </button>
+            {/* <UserInvite
               dynamicContentId={id}
               dynamicContentTitle={workspaceName}
               dynamicContentSharedUserId={sharedUserId}
-            />
+            /> */}
           </div>
           <div className="flex dark:text-[#8d9191] text-lg items-center text-black">
             <Slack className="mx-2 max-md:mx-1" />
@@ -579,6 +587,13 @@ export default function EditWorkspace({
       <PaymentModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
+      />
+      <UserInviteModal
+        dynamicContentId={id}
+        dynamicContentTitle={workspaceName}
+        dynamicContentSharedUserId={sharedUserId}
+        isOpen = {isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}      
       />
     </div>
     // </Layout>
