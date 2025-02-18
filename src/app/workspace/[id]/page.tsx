@@ -29,7 +29,6 @@ import axios from "axios";
 import DeleteWorkspaceModal from "@/app/components/modal/deleteworkspacemodal";
 import SocialShare from "@/app/components/layout/socialshare";
 import Spinner from "@/app/components/layout/Spinner";
-import UserInvite from "@/app/components/layout/Userinvite";
 import UserInviteModal from "@/app/components/modal/userinvitemodal";
 
 // Define the types for the message and response data
@@ -186,7 +185,7 @@ export default function EditWorkspace({
       try {
         const params = await asyncParams; // Wait for promise to resolve
         setId(params.id); // Unwrap and set the `id`
-  
+
         // Get the workspace name from the query params
         const workspaceNameFromQuery = searchParams?.get("name");
         if (workspaceNameFromQuery) {
@@ -196,10 +195,10 @@ export default function EditWorkspace({
         console.error("Error fetching asyncParams:", error);
       }
     };
-  
+
     fetchParams();
   }, [asyncParams, searchParams]);
-  
+
   useEffect(() => {
     const parsedUserData = JSON.parse(localStorage.getItem("userdata")!);
     SetProfileUrl(parsedUserData.profile_img);
@@ -317,7 +316,10 @@ export default function EditWorkspace({
         <div className="flex items-center justify-between text-white border-b-2 p-3 border-b-gray-300 dark:border-b-[#2b2c2d]">
           <div className="flex items-center text-5xl max-md:hidden">
             <RxAvatar className=" text-black dark:text-white max-md:hidden hidden" />
-            <button className="flex items-center mx-5 text-[#20b8cd] max-md:mx-0" onClick={()=> setIsInviteModalOpen(true)}>
+            <button
+              className="flex items-center mx-5 text-[#20b8cd] max-md:mx-0"
+              onClick={() => setIsInviteModalOpen(true)}
+            >
               <UserPlus />
               <p className="text-lg mx-2 max-md:mx-0 max-md:ml-2">Invite</p>
             </button>
@@ -592,8 +594,8 @@ export default function EditWorkspace({
         dynamicContentId={id}
         dynamicContentTitle={workspaceName}
         dynamicContentSharedUserId={sharedUserId}
-        isOpen = {isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}      
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
       />
     </div>
     // </Layout>
