@@ -47,18 +47,22 @@ export default function SharePage({
 
   useEffect(() => {
     asyncParams.then((params) => {
-      // setId(params.id);
       console.log(params);
+
+      if (!searchParams) return; // Ensure searchParams is not null
+
       const workspaceNameFromQuery = searchParams.get("title");
       const SharedUserFromQuery = searchParams.get("Shared");
+
       if (workspaceNameFromQuery) {
-        setWorkspaceName(workspaceNameFromQuery); // Set workspace name
+        setWorkspaceName(workspaceNameFromQuery);
       }
       if (SharedUserFromQuery) {
         setSharedUser(SharedUserFromQuery);
       }
     });
   }, [asyncParams, searchParams]);
+
   const fetchMessageHistory = async () => {
     if (!workspaceName) return;
 

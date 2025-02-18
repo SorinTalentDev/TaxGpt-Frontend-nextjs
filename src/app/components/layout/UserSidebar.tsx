@@ -63,7 +63,8 @@ const Sidebar = ({
   useEffect(() => {
     const selectedIndex = navItems.findIndex((item) => item.href === pathname);
     const selectedWorkspaceIndex = workspaceItems.findIndex(
-      (workspace) => getBaseUrl(workspace.href) === getBaseUrl(pathname)
+      (workspace) =>
+        getBaseUrl(workspace.href) === getBaseUrl(pathname || "null")
     );
     // alert(pathname);
     setSelectedIndex(selectedIndex !== -1 ? selectedIndex : null);
