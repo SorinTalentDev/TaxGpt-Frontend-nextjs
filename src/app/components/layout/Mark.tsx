@@ -25,7 +25,7 @@ const Mark = () => {
   // Prevent hydration mismatch by only rendering the image after mounting
   if (!isMounted) {
     return (
-      <div className="bg-white flex justify-start items-center p-2 text-right dark:bg-[#111111]">
+      <div className="bg-white flex justify-start items-center p-2 text-right dark:bg-[#111111]" style={{ backgroundColor: "#ffffff00"}}>
         <div className="w-48">
           <Image
             src={markImg}
@@ -41,7 +41,7 @@ const Mark = () => {
   }
 
   return (
-    <div className="bg-white flex justify-start items-center p-2 text-right dark:bg-[#111111]">
+    <div className="bg-white flex justify-start items-center p-2 text-right dark:bg-[#111111]" style={{ backgroundColor: "#ffffff00"}}>
       <div className="w-48">
         <Image
           src={isDarkMode ? darkImg : markImg}
