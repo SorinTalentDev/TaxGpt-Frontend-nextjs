@@ -21,7 +21,7 @@ const Page: React.FC = () => {
         <Mark />
       </div>
       <div className="pt-12 px-16 h-full max-md:px-0">
-        <hr className=" h-1 bg-black border-0"></hr>
+        <hr className=" h-1 border-0"></hr>
         <div className="bg-login-second-color pt-28 flex px-2 justify-left h-full items-center max-md:pt-0 dark:bg-[#1a1a1a]">
           <div className="h-full flex justify-center items-center justify-items-center ml-20 max-md:hidden">
             <Loginsidebar activeTab={activeTab} onTabChange={handleTabChange} />

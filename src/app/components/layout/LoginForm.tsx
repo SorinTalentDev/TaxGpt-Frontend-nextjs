@@ -130,7 +130,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="bg-white py-[5%] w-[50%] px-[10%] max-md:w-full max-md:bg-login-second-color dark:bg-[#0a0a0a]">
+    <div className="bg-white py-[5%] w-[50%] px-[10%] max-md:w-full max-md:bg-login-second-color dark:bg-[#0a0a0a] h-[570px]">
       <p className="text-left pb-11">
         Don't have an account?{" "}
         <Link href="/signup" className="text-blue-700">

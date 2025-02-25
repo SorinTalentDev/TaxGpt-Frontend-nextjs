@@ -29,8 +29,8 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
   return (
     <div className="bg-white shadow-md flex flex-col w-full relative dark:bg-[#0a0a0a]">
       {/* Tabs */}
-      <div className="flex flex-col mt-10 w-32">
-        <div className="grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer">
+      <div className="flex flex-col w-32">
+        {/* <div className="grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer">
           <Image
             src={LoginSub}
             layout="fixed"
@@ -38,7 +38,7 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
             width={50}
             height={50}
           />
-        </div>
+        </div> */}
         {/* Sign In Tab */}
         <div
           className={`grid justify-center items-center justify-items-center h-36 py-8 cursor-pointer ${
@@ -68,7 +68,7 @@ const LoginSidebar: React.FC<LoginSidebarProps> = ({
 
       {/* Active Border Indicator */}
       <div
-        className={`absolute left-0 top-[190px] h-32 w-1 bg-blue-600 transition-transform duration-300 ${
+        className={`absolute left-0 top-[15px] h-32 w-1 bg-blue-600 transition-transform duration-300 ${
           activeTab === "signin" ? "translate-y-0" : "translate-y-36"
         }`}
       ></div>
