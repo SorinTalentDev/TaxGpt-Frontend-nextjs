@@ -15,6 +15,7 @@ interface Document {
   title: string;
   uploadDate: string;
   purpose: string;
+  url: string;
 }
 
 export default function Page() {
@@ -87,6 +88,7 @@ export default function Page() {
         title: selectedFile.name,
         uploadDate: new Date().toLocaleDateString(),
         purpose: "Uploaded via modal",
+        url: "",
       };
 
       setData((prevData) => [...prevData, newDocument]);
@@ -109,6 +111,7 @@ export default function Page() {
           title: doc.filename,
           uploadDate: new Date(doc.created_at * 1000).toLocaleDateString(),
           purpose: doc.purpose,
+          url: doc.url,
         }));
         setData(transformedData);
         console.log("data: ", transformedData);
