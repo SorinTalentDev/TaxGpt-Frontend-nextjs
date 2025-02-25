@@ -9,6 +9,7 @@ import {
   useTable,
   useSortBy,
   usePagination,
+  useGlobalFilter,
   Column,
   TableInstance,
   TableState,
@@ -21,11 +22,13 @@ interface Document {
   title: string;
   uploadDate: string;
   purpose: string;
+  url: string;
 }
 
 interface TableStateWithPagination extends TableState<Document> {
   pageIndex: number;
   pageSize: number;
+  globalFilter: string;
 }
 
 interface DataTableProps {
@@ -45,6 +48,7 @@ interface TableInstanceWithPagination extends TableInstance<Document> {
   pageCount: number;
   setPageSize: (size: number) => void;
   gotoPage: (pageIndex: number) => void;
+  setGlobalFilter: (filterValue: string) => void;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
@@ -59,10 +63,11 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
     canNextPage,
     canPreviousPage,
     pageOptions,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, globalFilter },
     gotoPage,
     pageCount,
     setPageSize,
+    setGlobalFilter,
   } = useTable<Document>(
     {
       columns: React.useMemo(
@@ -79,14 +84,30 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
         [columns]
       ),
       data,
-      initialState: { pageIndex: 0, pageSize: 10 }, // Default state: first page, 5 rows per page
+      initialState: { 
+        pageIndex: 0, 
+        pageSize: 10,
+        globalFilter: ''
+      },
     } as UseTableOptions<Document> & { initialState: TableStateWithPagination },
-    useSortBy, // Sorting plugin
-    usePagination // Pagination plugin
+    useGlobalFilter,
+    useSortBy,
+    usePagination,
   ) as TableInstanceWithPagination;
 
   return (
     <div className="overflow-x-auto">
+      {/* Add Search Filter */}
+      <div className="mb-4">
+        <input
+          type="text"
+          value={globalFilter || ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder="Search in all columns..."
+          className="p-2 border rounded w-full dark:bg-[#111111] dark:border-[#111111] dark:text-white"
+        />
+      </div>
+
       {/* Table */}
       <table
         {...getTableProps()}

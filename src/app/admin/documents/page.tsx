@@ -15,17 +15,34 @@ interface Document {
   title: string;
   uploadDate: string;
   purpose: string;
+  url: string;
 }
 export default function Page() {
   const [data, setData] = useState<Document[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileUrl, setFileUrl] = useState("");
+  const [fileName, setFileName] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const Router = useRouter();
   const columns: Column<Document>[] = React.useMemo(
     () => [
       { Header: "File Name", accessor: "title" },
       { Header: "Upload Date", accessor: "uploadDate" },
+      {
+        Header: "URL",
+        accessor: "url",
+        Cell: ({ value }: { value: string }) => (
+          <a
+            href={value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:text-blue-700 underline"
+          >
+            {value}
+          </a>
+        )
+      },
       { Header: "Purpose", accessor: "purpose" },
       // {
       //   Header: "Actions",
@@ -66,11 +83,28 @@ export default function Page() {
       toast.error("Please select a file.");
       return;
     }
+    if (!fileUrl) {
+      toast.error("Please enter a URL.");
+      return;
+    }
+    if (!fileName) {
+      toast.error("Please enter a file name.");
+      return;
+    }
+
+    // Check if filename already exists
+    const fileNameExists = data.some(doc => doc.title.toLowerCase() === fileName.toLowerCase());
+    if (fileNameExists) {
+      toast.error("A document with this name already exists. Please choose a different name.");
+      return;
+    }
 
     try {
       setIsUploading(true);
       const formData = new FormData();
       formData.append("file", selectedFile);
+      formData.append("url", fileUrl);
+      formData.append("fileName", fileName);
       const response = await axios.post(
         "https://ltpoc-backend-b90752644b3c.herokuapp.com/upload-to-openai",
         formData,
@@ -82,9 +116,10 @@ export default function Page() {
       );
       const newDocument = {
         id: Date.now(),
-        title: selectedFile.name,
+        title: fileName,
         uploadDate: new Date().toLocaleDateString(),
         purpose: "assistants",
+        url: fileUrl,
       };
 
       setData((prevData) => [...prevData, newDocument]);
@@ -107,9 +142,9 @@ export default function Page() {
         const transformedData = response.data.data.data.map((doc: any) => ({
           id: doc.id,
           title: doc.title,
-          // uploadDate: new Date(doc.created_at * 1000).toLocaleDateString(),
           uploadDate: doc.uploadDate,
           purpose: doc.purpose,
+          url: doc.url,
         }));
         setData(transformedData);
       } catch (error) {
@@ -128,7 +163,7 @@ export default function Page() {
             </h1>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-green-500 text-white px-4 py-2 mb-4 rounded hover:bg-green-600 flex hidden"
+              className="bg-green-500 text-white px-4 py-2 mb-4 rounded hover:bg-green-600 flex"
             >
               <Upload />
               <p className="pl-2">Upload</p>
@@ -145,13 +180,36 @@ export default function Page() {
                 Upload Document
               </h2>
               <input
-                type="file"
-                accept="application/pdf"
-                onChange={(e) =>
-                  setSelectedFile(e.target.files ? e.target.files[0] : null)
-                }
+                type="text"
+                placeholder="File Name"
+                value={fileName}
+                onChange={(e) => setFileName(e.target.value)}
                 className="border p-2 w-full mb-4 text-gray-900 dark:text-gray-100 dark:bg-gray-700 dark:border-gray-600"
               />
+              <div className="mb-4">
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => {
+                    const file = e.target.files ? e.target.files[0] : null;
+                    setSelectedFile(file);
+                    if (file) {
+                      setFileName(file.name);
+                    }
+                    setFileUrl(""); // Clear URL when file is selected
+                  }}
+                  className="border p-2 w-full mb-2 text-gray-900 dark:text-gray-100 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <input
+                  type="url"
+                  placeholder="Enter document URL"
+                  value={fileUrl}
+                  onChange={(e) => {
+                    setFileUrl(e.target.value);
+                  }}
+                  className="border p-2 w-full text-gray-900 dark:text-gray-100 dark:bg-gray-700 dark:border-gray-600"
+                />
+              </div>
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={handleFileUpload}
